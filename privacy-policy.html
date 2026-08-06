@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuadre — Política de Privacidad / Privacy Policy</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --text: #16181d;
+    --text-muted: #565c66;
+    --accent: #3552d6;
+    --accent-soft: #e8ecfc;
+    --border: #e2e4ea;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111114;
+      --surface: #17181d;
+      --text: #eef0f4;
+      --text-muted: #9aa0ab;
+      --accent: #82a4ff;
+      --accent-soft: #1c2440;
+      --border: #2a2d35;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .mark-glyph {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .mark-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 600;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 0 0 10px;
+  }
+
+  .meta {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .summary {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--text);
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 18px;
+    margin: 28px 0 48px;
+  }
+
+  .lang-block + .lang-block {
+    margin-top: 72px;
+    padding-top: 56px;
+    border-top: 1px solid var(--border);
+  }
+
+  .lang-label {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 18px;
+  }
+
+  section {
+    margin-bottom: 36px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+
+  p {
+    max-width: 62ch;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+
+  p.muted {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  ul {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    max-width: 62ch;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+  li::marker {
+    color: var(--accent);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+
+  .contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 480px) {
+    .page { padding: 40px 18px 72px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="mark">
+    <div class="mark-glyph">E</div>
+    <div class="mark-name">Encuadre</div>
+  </div>
+
+  <div class="meta">Política de privacidad</div>
+  <h1>No recolectamos tus datos. En serio.</h1>
+  <p class="summary">Encuadre funciona enteramente en tu teléfono. No hay servidores, no hay cuentas, no hay analítica, y ninguna foto ni dato sensor sale nunca de tu dispositivo.</p>
+
+  <div class="lang-block">
+    <div class="lang-label">Español</div>
+
+    <section class="card">
+      <h2>Qué datos recolectamos</h2>
+      <p><strong>Ninguno.</strong> Encuadre no tiene backend, no crea cuentas de usuario, no incluye analítica ni SDKs de publicidad o rastreo de terceros. No sabemos quién eres, ni podríamos saberlo aunque quisiéramos: no hay ningún canal por el que esa información pudiera llegarnos.</p>
+    </section>
+
+    <section>
+      <h2>Permiso de cámara</h2>
+      <p>Encuadre pide acceso a la cámara para mostrarte una vista previa en vivo de la escena que vas a fotografiar, y así explicarte en tiempo real cómo ajustar tu cámara real. Esa vista previa se procesa enteramente en tu teléfono. Ninguna imagen ni fotograma se guarda, se sube, ni se envía a ningún servidor — ni nuestro ni de terceros.</p>
+    </section>
+
+    <section>
+      <h2>Sensores del teléfono</h2>
+      <p>Usamos el sensor de luz ambiental (en los dispositivos Android que lo tienen) y el giroscopio para calcular las sugerencias de ISO, apertura y velocidad de obturación, y para detectar movimiento en modos como Barrido o el aviso de estabilidad de Retrato nocturno. Esas lecturas se usan al instante, en el dispositivo, y nunca se almacenan ni se transmiten.</p>
+    </section>
+
+    <section>
+      <h2>Qué se guarda localmente</h2>
+      <p>Guardamos dos preferencias en el almacenamiento local de tu teléfono (nunca en un servidor): tu idioma elegido, y si ya completaste el tutorial. Puedes borrar esta información en cualquier momento desinstalando la app.</p>
+    </section>
+
+    <section>
+      <h2>Terceros y menores de edad</h2>
+      <p>No compartimos información con terceros porque no recolectamos ninguna. Encuadre no está dirigida específicamente a menores de edad, y al no recolectar datos de nadie, tampoco recolecta datos de menores.</p>
+    </section>
+
+    <section>
+      <h2>Cambios a esta política</h2>
+      <p class="muted">Si esto cambia alguna vez — por ejemplo, si agregamos una función que sí requiera datos — esta página se actualizará primero, con la fecha de la revisión más reciente indicada abajo.</p>
+    </section>
+
+    <section>
+      <h2>Contacto</h2>
+      <p>¿Preguntas sobre esta política? Escríbenos:</p>
+      <a class="contact" href="mailto:linaresmendez25@gmail.com">linaresmendez25@gmail.com</a>
+    </section>
+  </div>
+
+  <div class="lang-block">
+    <div class="lang-label">English</div>
+
+    <section class="card">
+      <h2>What data we collect</h2>
+      <p><strong>None.</strong> Encuadre has no backend, creates no user accounts, and includes no analytics or third-party advertising/tracking SDKs. We don't know who you are, and couldn't find out even if we wanted to — there's no channel for that information to reach us.</p>
+    </section>
+
+    <section>
+      <h2>Camera permission</h2>
+      <p>Encuadre requests camera access to show you a live preview of the scene you're about to photograph, so it can explain in real time how to adjust your real camera. That preview is processed entirely on your phone. No image or frame is ever saved, uploaded, or sent to any server — ours or anyone else's.</p>
+    </section>
+
+    <section>
+      <h2>Phone sensors</h2>
+      <p>We use the ambient light sensor (on Android devices that have one) and the gyroscope to calculate ISO, aperture, and shutter speed suggestions, and to detect motion in modes like Panning or the stability warning in Night Portrait. Those readings are used instantly, on-device, and are never stored or transmitted.</p>
+    </section>
+
+    <section>
+      <h2>What's stored locally</h2>
+      <p>We store two preferences in your phone's local storage (never on a server): your chosen language, and whether you've completed the tutorial. You can clear this at any time by uninstalling the app.</p>
+    </section>
+
+    <section>
+      <h2>Third parties and children</h2>
+      <p>We don't share information with third parties because we don't collect any. Encuadre isn't directed specifically at children, and since it collects no data from anyone, it collects none from children either.</p>
+    </section>
+
+    <section>
+      <h2>Changes to this policy</h2>
+      <p class="muted">If this ever changes — for example, if we add a feature that does require data — this page will be updated first, with the most recent revision date shown below.</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>Questions about this policy? Reach us at:</p>
+      <a class="contact" href="mailto:linaresmendez25@gmail.com">linaresmendez25@gmail.com</a>
+    </section>
+  </div>
+
+  <footer>
+    Última actualización / Last updated: 4 de agosto de 2026 · Encuadre v1.0.0
+  </footer>
+</div>
+</body>
+</html>
