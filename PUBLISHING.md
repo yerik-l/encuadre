@@ -49,9 +49,10 @@ decidas tú, no la app.
 
 QUÉ INCLUYE
 
-• 6 modos de escena (retrato en exteriores, paisaje/hora dorada, barrido,
-  retrato de acción, retrato nocturno, retrato en estudio/interiores), cada
-  uno con guía calibrada a su propia luz y su propio movimiento.
+• 7 modos de escena (retrato en exteriores, paisaje/hora dorada, barrido,
+  retrato de acción, retrato nocturno, retrato en estudio/interiores,
+  enfoque), cada uno con guía calibrada a su propia luz y su propio
+  movimiento.
 • Triángulo de exposición interactivo: mueve ISO, apertura u obturación con
   el dedo y siente en tiempo real cómo se compensan entre sí para mantener
   la misma exposición — y qué pasa cuando uno de los tres llega a su límite.
@@ -90,9 +91,9 @@ subject — so you make the call, not the app.
 
 WHAT'S INCLUDED
 
-• 6 scene modes (outdoor portrait, landscape/golden hour, panning, action
-  portrait, night portrait, studio/indoor portrait), each calibrated to its
-  own light and motion conditions.
+• 7 scene modes (outdoor portrait, landscape/golden hour, panning, action
+  portrait, night portrait, studio/indoor portrait, focus), each calibrated
+  to its own light and motion conditions.
 • Interactive exposure triangle: drag ISO, aperture, or shutter speed with
   your finger and feel in real time how the other two compensate to keep
   the same exposure — and what happens when one of the three hits its limit.
@@ -181,16 +182,17 @@ eas submit -p ios --latest
 3. **Ícono final** — ya en proceso tuyo; mantén 1024×1024, RGB, sin canal
    alfa para iOS (el placeholder actual ya cumple ese formato).
 4. ~~Correo real de contacto en la política de privacidad~~ — resuelto,
-   `privacy-policy.html` ya usa `linaresmendez25@gmail.com`. Sigue pendiente
-   **hostearla**: ya no está en un Artifact de Claude (empiezan privados por
-   defecto, un revisor sin cuenta no podría abrirla) — es un archivo
-   autocontenido en el repo. La opción gratis más simple es GitHub Pages
-   (subir el repo, activar Pages, usar esa URL en App Store Connect / Play
-   Console).
-5. **Feature graphic de Play Store** (1024×500) — gráfico promocional
+   `privacy-policy.html` ya usa `linaresmendez25@gmail.com`.
+5. ~~Hostear la política de privacidad~~ — resuelto. Ya está en vivo, servida
+   por jsDelivr directo desde el repo público (no hizo falta GitHub Pages):
+   **https://cdn.jsdelivr.net/gh/yerik-l/encuadre@main/privacy-policy.html**.
+   Esa es la URL para App Store Connect / Play Console. Detalle: jsDelivr
+   cachea el contenido, así que una edición futura del archivo tarda un rato
+   en reflejarse ahí.
+6. **Feature graphic de Play Store** (1024×500) — gráfico promocional
    obligatorio para la ficha de Android, no lo generé porque es una pieza de
    diseño de marca, igual que el ícono.
-6. **Screenshots** — mejor tomarlas desde tu Android real (ya lo tienes
+7. **Screenshots** — mejor tomarlas desde tu Android real (ya lo tienes
    configurado y probado con el APK) que desde el simulador de iOS: el
    simulador no tiene cámara física, así que cualquier pantalla de un modo
    (las 6 usan `CameraLiveView`) saldría en negro o rota — solo Tutorial,

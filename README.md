@@ -23,14 +23,15 @@ De la auditoría de disponibilidad para publicar, esto ya está resuelto:
   `ios.bundleIdentifier` y `android.package` en `app.json` (`com.encuadre.app` — cámbialo si
   quieres usar tu propio dominio antes de subir a las tiendas de verdad). Con esto ya se puede
   correr `eas build -p android --profile preview` para sacar el APK de pruebas.
-- **Política de privacidad**: bilingüe, en [`privacy-policy.html`](privacy-policy.html) — un
-  archivo autocontenido (sin dependencias externas) listo para hostear donde quieras. Antes
-  estaba publicada como Artifact de Claude, pero los Artifacts empiezan privados por defecto —
-  un revisor de Apple/Google sin cuenta de Claude no podría abrirlo, así que se movió a un
-  archivo propio del repo. La opción más simple para hostearlo gratis es GitHub Pages: subir el
-  repo (o solo este archivo) a GitHub, activar Pages en la configuración del repositorio, y usar
-  la URL que te da. El correo de contacto ya es real (`linaresmendez25@gmail.com`); solo falta
-  decidir dónde hostear el archivo antes de enviarla a App Store Connect / Play Console.
+- **Política de privacidad**: bilingüe, en [`privacy-policy.html`](privacy-policy.html), y ya
+  publicada y en vivo — https://cdn.jsdelivr.net/gh/yerik-l/encuadre@main/privacy-policy.html.
+  Antes estaba en un Artifact de Claude, pero los Artifacts empiezan privados por defecto (un
+  revisor de Apple/Google sin cuenta de Claude no podría abrirlo), así que se movió a este
+  archivo del repo. Como el repo es público, jsDelivr lo sirve directo desde GitHub sin ningún
+  paso extra (GitHub Pages habría sido una alternativa, pero no hizo falta activarlo). Es la URL
+  para poner en App Store Connect / Play Console — el correo de contacto ya es real
+  (`linaresmendez25@gmail.com`). Único detalle: jsDelivr cachea el contenido, así que si se edita
+  el archivo el cambio tarda un rato en reflejarse (no es instantáneo como Pages).
 - **Permiso de cámara denegado permanentemente**: en vez de un botón muerto, ahora detecta
   `canAskAgain` y manda a Configuración con `Linking.openSettings()` (`App.tsx`).
 - **Error boundary** (`src/components/ErrorBoundary.tsx`): una excepción de render ya no deja la
@@ -134,9 +135,9 @@ desarrollador. Encontró un error real de dominio, no solo de UI:
   app a revisión. Se movió a [`privacy-policy.html`](privacy-policy.html), un archivo
   autocontenido en el repo listo para hostear donde quieras (ver "Estado de cara a publicar").
 
-## Los 6 modos
+## Los 7 modos
 
-Los 6 tienen el triángulo de exposición interactivo (ver más abajo). Lo que cambia entre ellos:
+Los 7 tienen el triángulo de exposición interactivo (ver más abajo). Lo que cambia entre ellos:
 
 1. **Retrato en exteriores** — luz + regla de tercios
 2. **Paisaje / hora dorada** — solo luz
@@ -146,6 +147,10 @@ Los 6 tienen el triángulo de exposición interactivo (ver más abajo). Lo que c
    demasiado para la velocidad de obturación sugerida + regla de tercios
 6. **Retrato en estudio / interiores** — luz (leída como calidad/dirección, no solo cantidad) +
    regla de tercios
+7. **Enfoque** — velocidad del sujeto (input manual, igual que Acción) para sugerir AF-S vs.
+   AF-C, más un aviso de luz cuando el autofoco puede empezar a fallar o "buscar". A diferencia
+   de los otros 6, no gira en torno a exposición sino al otro motivo clásico de "me salió
+   borroso" — que la cámara enfocó donde no era.
 
 Bokeh queda fuera a propósito: depende de estimar la distancia al sujeto con precisión, y eso no
 todos los teléfonos lo hacen igual de bien (LiDAR / doble cámara).
@@ -166,6 +171,7 @@ la escena — es información fija de equipo, así que vive fuera de `getGuidanc
 | Retrato de acción | 70–200mm | Teleobjetivo, f/2.8 constante idealmente |
 | Retrato nocturno | 35–50mm | Fijo, lo más abierto que tengas |
 | Retrato en estudio / interiores | 35–50mm | Fijo, apertura abierta |
+| Enfoque | 24–70mm | Cualquiera con autofoco confiable |
 
 Casi nadie compra lentes extra al comprar su primera cámara, así que cada modo también trae un
 tip desplegable ("Con tu lente de kit ▾") explicando cómo acercarse a la técnica usando el zoom
@@ -174,7 +180,7 @@ cubre el rango sin ningún compromiso — se lo decimos así de directo en vez d
 que no hace falta. En retrato y acción sí hay una diferencia real (menos desenfoque, menos
 alcance), y el tip explica qué hacer al respecto (acercarse, subir ISO, etc.).
 
-## Triángulo de exposición interactivo (los 6 modos) y regla de tercios (los 3 de retrato)
+## Triángulo de exposición interactivo (los 7 modos) y regla de tercios (los 3 de retrato)
 
 - **Triángulo de exposición interactivo** (`src/components/ExposureTriangleWidget.tsx` +
   `src/exposure/exposureTriangle.ts`): tres controles deslizables — ISO, apertura, obturador.
@@ -186,7 +192,7 @@ alcance), y el tip explica qué hacer al respecto (acercarse, subir ISO, etc.).
   tarjeta de guía de abajo, porque esa tarjeta cambia de altura según el largo del texto y
   llegó a tapar el botón cuando estaba anclado por posición absoluta cerca del fondo. Al principio
   solo estaba en los modos de retrato, pero el intercambio ISO/apertura/obturador le importa
-  igual a quien está aprendiendo barrido o paisaje, así que se abrió a los 6 modos
+  igual a quien está aprendiendo barrido o paisaje, así que se abrió a los 7 modos
   (`showExposureTriangle: true` en todos, `src/modes/modes.ts`).
 - **Feedback visual en vivo sobre la cámara mientras se mueve el triángulo**: mover los sliders
   cambiaba los números pero no la pantalla — para quien está probando la app se sentía como que
@@ -211,6 +217,13 @@ alcance), y el tip explica qué hacer al respecto (acercarse, subir ISO, etc.).
     exposición se mantiene igual.
   Los cuatro efectos son puramente ilustrativos (no es la imagen real que produciría esa
   combinación), y se apagan solos al cerrar el triángulo.
+- **Modo Enfoque** (`src/modes/modes.ts`, función `enfoque`): el único de los 7 que no gira en
+  torno a exposición. Reusa el mismo selector de velocidad de sujeto que Acción
+  (`SubjectSpeedPicker`) para recomendar AF-S (sujeto quieto) o AF-C (sujeto en movimiento), y usa
+  el sensor de luz para advertir cuándo el autofoco puede fallar o "buscar" sin encontrar el
+  punto — un problema real de autofoco en poca luz que ningún otro modo cubre. Agrega un cuarto
+  chip a `GuidanceOverlay` (`suggestedFocus`, opcional — los otros 6 modos no lo usan) mostrando
+  "AF-S" o "AF-C".
 - **Regla de tercios** (`src/components/RuleOfThirdsGrid.tsx`): cuadrícula de composición sobre
   la cámara en vivo. Esta sí se quedó limitada a los tres modos de retrato (exteriores, nocturno,
   estudio) — es donde más importa dónde cae el sujeto en el encuadre.

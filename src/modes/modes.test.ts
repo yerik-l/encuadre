@@ -127,9 +127,38 @@ describe('accion — la velocidad y el ISO siguen la velocidad del sujeto declar
   });
 });
 
+describe('enfoque — AF-S/AF-C según velocidad del sujeto, aviso de poca luz', () => {
+  const mode = getMode('enfoque');
+
+  it('sujeto quieto sugiere enfoque de una toma (AF-S)', () => {
+    const g = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'lento' }, t);
+    expect(g.suggestedFocus).toBe('AF-S');
+  });
+
+  it('sujeto en movimiento sugiere enfoque continuo (AF-C)', () => {
+    const g = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'medio' }, t);
+    expect(g.suggestedFocus).toBe('AF-C');
+  });
+
+  it('sujeto rápido también sugiere AF-C', () => {
+    const g = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'rapido' }, t);
+    expect(g.suggestedFocus).toBe('AF-C');
+  });
+
+  it('con poca luz agrega el aviso de que el autofoco puede fallar', () => {
+    const g = mode.getGuidance({ lux: 10, motionMagnitude: 0, subjectSpeed: 'medio' }, t);
+    expect(g.detail).toContain(t.guidance.enfoque.lowLightWarning);
+  });
+
+  it('con luz normal no agrega el aviso de poca luz', () => {
+    const g = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'medio' }, t);
+    expect(g.detail).not.toContain(t.guidance.enfoque.lowLightWarning);
+  });
+});
+
 describe('MODES', () => {
-  it('los 6 modos tienen el triángulo interactivo habilitado', () => {
-    expect(MODES).toHaveLength(6);
+  it('los 7 modos tienen el triángulo interactivo habilitado', () => {
+    expect(MODES).toHaveLength(7);
     expect(MODES.every((m) => m.showExposureTriangle)).toBe(true);
   });
 });

@@ -6,7 +6,8 @@ export type ModeId =
   | 'barrido'
   | 'accion'
   | 'retratoNocturno'
-  | 'retratoEstudio';
+  | 'retratoEstudio'
+  | 'enfoque';
 
 export type SubjectSpeed = 'lento' | 'medio' | 'rapido';
 
@@ -24,7 +25,7 @@ export interface SensorSnapshot {
   lux: number | null;
   /** Magnitud suavizada del giroscopio (rad/s aprox.), qué tan rápido se mueve el teléfono. */
   motionMagnitude: number;
-  /** Solo aplica al modo 'accion': el teléfono no puede medir la velocidad del sujeto, se pregunta al usuario. */
+  /** Aplica a los modos 'accion' y 'enfoque': el teléfono no puede medir la velocidad del sujeto, se pregunta al usuario. */
   subjectSpeed?: SubjectSpeed;
 }
 
@@ -34,6 +35,8 @@ export interface Guidance {
   suggestedIso: string;
   suggestedAperture: string;
   suggestedShutter: string;
+  /** Solo lo usa el modo 'enfoque' — qué modo de autofoco conviene (AF-S / AF-C). */
+  suggestedFocus?: string;
 }
 
 export interface ModeDefinition {
@@ -44,7 +47,7 @@ export interface ModeDefinition {
   showCompositionGrid: boolean;
   /**
    * Botón para abrir el simulador interactivo del triángulo de exposición.
-   * true en los 6 modos — sentir el intercambio entre ISO/apertura/obturador
+   * true en los 7 modos — sentir el intercambio entre ISO/apertura/obturador
    * con el dedo ayuda tanto en paisaje o barrido como en retrato.
    */
   showExposureTriangle: boolean;
@@ -321,6 +324,61 @@ const retratoEstudio: ModeDefinition = {
   },
 };
 
+/**
+ * A diferencia de los otros modos, este no gira en torno a exposición sino a
+ * enfoque — el otro motivo clásico de "me salió borroso" que no tiene nada
+ * que ver con luz o mano temblorosa. Reusa el selector de velocidad de
+ * sujeto (igual que 'accion') para decidir AF-S vs. AF-C, y la luz para
+ * advertir cuándo el autofoco puede empezar a fallar o "buscar" — un
+ * problema real y común en poca luz, no cubierto por ningún otro modo.
+ */
+const enfoque: ModeDefinition = {
+  id: 'enfoque',
+  usesMotion: false,
+  usesSubjectSpeedInput: true,
+  showCompositionGrid: true,
+  showExposureTriangle: true,
+  focalLength: '35–105mm',
+  getGuidance: ({ lux, subjectSpeed = 'medio' }, t) => {
+    const band = lightLabel(lux);
+    const text = t.guidance.enfoque[subjectSpeed];
+    const isLowLight = band === 'oscuro';
+    const detail = isLowLight
+      ? `${text.detail} ${t.guidance.enfoque.lowLightWarning}`
+      : text.detail;
+    const suggestedFocus = subjectSpeed === 'lento' ? 'AF-S' : 'AF-C';
+
+    if (band === 'oscuro') {
+      return {
+        headline: text.headline,
+        detail,
+        suggestedIso: '800–1600',
+        suggestedAperture: 'f/1.8–f/2.8',
+        suggestedShutter: '1/125+',
+        suggestedFocus,
+      };
+    }
+    if (band === 'medio') {
+      return {
+        headline: text.headline,
+        detail,
+        suggestedIso: '100–400',
+        suggestedAperture: 'f/2.0–f/4.0',
+        suggestedShutter: '1/125–1/250',
+        suggestedFocus,
+      };
+    }
+    return {
+      headline: text.headline,
+      detail,
+      suggestedIso: '100',
+      suggestedAperture: 'f/4.0–f/5.6',
+      suggestedShutter: '1/500–1/1000',
+      suggestedFocus,
+    };
+  },
+};
+
 export const MODES: ModeDefinition[] = [
   retrato,
   paisaje,
@@ -328,6 +386,7 @@ export const MODES: ModeDefinition[] = [
   accion,
   retratoNocturno,
   retratoEstudio,
+  enfoque,
 ];
 
 export function getMode(id: ModeId): ModeDefinition {

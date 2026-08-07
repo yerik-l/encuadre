@@ -19,6 +19,9 @@ export function GuidanceOverlay({ guidance }: { guidance: Guidance }) {
         <SettingChip label={t.chips.iso} value={guidance.suggestedIso} />
         <SettingChip label={t.chips.aperture} value={guidance.suggestedAperture} />
         <SettingChip label={t.chips.shutter} value={guidance.suggestedShutter} />
+        {guidance.suggestedFocus && (
+          <SettingChip label={t.chips.focus} value={guidance.suggestedFocus} />
+        )}
       </View>
     </View>
   );

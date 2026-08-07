@@ -66,6 +66,12 @@ const es = {
       description:
         'Apunta a tu sujeto en interiores. Te explico cómo usar la ventana o tu fuente de luz como si fuera un estudio, sin equipo especializado.',
     },
+    enfoque: {
+      title: 'Enfoque',
+      subtitle: 'Elige el modo de enfoque correcto',
+      description:
+        'Apunta a tu sujeto y dime qué tan rápido se mueve. Te ayudo a elegir entre enfoque de una toma o continuo, y te aviso si la luz le va a poner difícil enfocar a tu cámara.',
+    },
   },
   lightBands: {
     muy_oscuro: 'Muy oscuro (noche, interior sin luz)',
@@ -80,7 +86,7 @@ const es = {
     medio: 'Medio (corriendo)',
     rapido: 'Rápido (vehículo, deporte)',
   },
-  chips: { iso: 'ISO', aperture: 'Apertura', shutter: 'Obturador' },
+  chips: { iso: 'ISO', aperture: 'Apertura', shutter: 'Obturador', focus: 'Enfoque' },
   guidance: {
     retrato: {
       oscuro: {
@@ -166,6 +172,25 @@ const es = {
           'Cerca de una ventana con sol directo la luz puede ser muy contrastada. Usa una cortina fina, papel blanco o cualquier tela translúcida para suavizarla antes de que llegue al sujeto.',
       },
     },
+    enfoque: {
+      lento: {
+        headline: 'Sujeto quieto: usa enfoque de una toma (AF-S)',
+        detail:
+          'Con el sujeto quieto, el enfoque de una toma (AF-S / One-Shot) es más preciso: la cámara enfoca una vez, al presionar el disparador a la mitad, y se queda ahí trabada. Elige un solo punto de enfoque sobre el ojo o la parte más importante del sujeto en vez de dejar que la cámara adivine.',
+      },
+      medio: {
+        headline: 'Sujeto en movimiento: considera enfoque continuo (AF-C)',
+        detail:
+          'Con movimiento moderado, el enfoque continuo (AF-C / AI Servo) sigue ajustando mientras mantienes el disparador a la mitad, así no pierdes al sujeto si se mueve. Si tu cámara lo permite, usa un punto de enfoque chico para más precisión.',
+      },
+      rapido: {
+        headline: 'Sujeto rápido: el enfoque continuo (AF-C) es casi obligatorio',
+        detail:
+          'Con un sujeto rápido, el enfoque de una toma se va a quedar atrás. Usa enfoque continuo (AF-C / AI Servo), y considera un área de enfoque más amplia para que la cámara no pierda al sujeto entre puntos individuales.',
+      },
+      lowLightWarning:
+        'Con esta poca luz, el autofoco puede fallar o "buscar" sin encontrar el punto — apunta a un borde de alto contraste cerca de tu sujeto, o cambia a enfoque manual si tu cámara lo permite.',
+    },
   },
   exposureTriangle: {
     openButton: 'Ver el triángulo en vivo',
@@ -249,6 +274,12 @@ const es = {
       tip: 'En interiores el espacio suele ser más chico que afuera — una focal más corta que la de retrato exterior te deja encuadrar sin tener que pegarte a la pared.',
       kitLensTip:
         'El lente de kit te sirve bien aquí porque 35–50mm ya está dentro de su rango — solo usa el número f más bajo disponible en esa distancia focal para tener algo de separación de fondo.',
+    },
+    enfoque: {
+      type: 'Cualquier lente con autofoco confiable — un zoom estándar (24-70mm o el de kit) sirve para practicar',
+      tip: 'Aquí la velocidad del autofoco importa más que la apertura — lentes más nuevos o de gama más alta enfocan más rápido y "buscan" menos en poca luz.',
+      kitLensTip:
+        'Tu lente de kit funciona bien para esto — el resultado depende más del modo que elijas en la cámara (AF-S vs. AF-C) y de dónde pongas el punto de enfoque que del lente en sí.',
     },
   },
   concepts: {
@@ -760,6 +791,12 @@ const en: Translations = {
       description:
         "Point at your subject indoors. I'll explain how to use a window or your light source like a studio, no specialized gear needed.",
     },
+    enfoque: {
+      title: 'Focus',
+      subtitle: 'Pick the right focus mode',
+      description:
+        "Point at your subject and tell me how fast it's moving. I'll help you choose between single-shot or continuous focus, and warn you if the light is going to make it hard for your camera to focus.",
+    },
   },
   lightBands: {
     muy_oscuro: 'Very dark (night, unlit indoors)',
@@ -774,7 +811,7 @@ const en: Translations = {
     medio: 'Medium (running)',
     rapido: 'Fast (vehicle, sports)',
   },
-  chips: { iso: 'ISO', aperture: 'Aperture', shutter: 'Shutter' },
+  chips: { iso: 'ISO', aperture: 'Aperture', shutter: 'Shutter', focus: 'Focus' },
   guidance: {
     retrato: {
       oscuro: {
@@ -860,6 +897,25 @@ const en: Translations = {
           'Near a window with direct sun, light can be very contrasty. Use a thin curtain, white paper, or any translucent fabric to soften it before it reaches your subject.',
       },
     },
+    enfoque: {
+      lento: {
+        headline: 'Still subject: use single-shot focus (AF-S)',
+        detail:
+          "With a still subject, single-shot focus (AF-S / One-Shot) is more precise: the camera focuses once, when you half-press the shutter, and locks there. Pick a single focus point over the eye or the most important part of the subject instead of letting the camera guess.",
+      },
+      medio: {
+        headline: 'Moving subject: consider continuous focus (AF-C)',
+        detail:
+          "With moderate movement, continuous focus (AF-C / AI Servo) keeps adjusting while you hold the shutter half-pressed, so you don't lose the subject if it shifts. If your camera allows it, use a smaller focus point for more precision.",
+      },
+      rapido: {
+        headline: 'Fast subject: continuous focus (AF-C) is nearly mandatory',
+        detail:
+          "With a fast subject, single-shot focus will fall behind. Use continuous focus (AF-C / AI Servo), and consider a wider focus area so the camera doesn't lose the subject between individual points.",
+      },
+      lowLightWarning:
+        'In this little light, autofocus can fail or "hunt" without locking on — aim at a high-contrast edge near your subject, or switch to manual focus if your camera allows it.',
+    },
   },
   exposureTriangle: {
     openButton: 'See the triangle live',
@@ -943,6 +999,12 @@ const en: Translations = {
       tip: 'Indoor spaces are usually tighter than outdoor ones — a shorter focal length than outdoor portraits lets you frame without backing into a wall.',
       kitLensTip:
         'Your kit lens works well here since 35–50mm is already within its range — just use the lowest f-number available at that focal length to get some background separation.',
+    },
+    enfoque: {
+      type: 'Any lens with reliable autofocus — a standard zoom (24-70mm or your kit lens) works fine to practice',
+      tip: "Autofocus speed matters more than aperture here — newer or higher-end lenses focus faster and 'hunt' less in low light.",
+      kitLensTip:
+        "Your kit lens works fine for this — the result depends more on the mode you pick on the camera (AF-S vs. AF-C) and where you place the focus point than on the lens itself.",
     },
   },
   concepts: {

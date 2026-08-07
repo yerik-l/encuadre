@@ -82,7 +82,7 @@ describe('App — enrutamiento de pantallas', () => {
     await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
   });
 
-  it('tras dar el permiso, muestra el selector de modos con los 6 modos', async () => {
+  it('tras dar el permiso, muestra el selector de modos con los 7 modos', async () => {
     render(<App />);
     await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
     await skipTutorial();
@@ -93,9 +93,10 @@ describe('App — enrutamiento de pantallas', () => {
     await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
     expect(screen.getByText('Retrato de acción')).toBeTruthy();
     expect(screen.getByText('Retrato en estudio / interiores')).toBeTruthy();
+    expect(screen.getByText('Enfoque')).toBeTruthy();
   });
 
-  it('el banner de Conceptos abre y cierra la lista de 17 temas', async () => {
+  it('el banner de Conceptos abre y cierra la lista de 19 temas', async () => {
     render(<App />);
     await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
     await skipTutorial();
