@@ -38,6 +38,26 @@ export function ExposureTriangleWidget({
   const exposureOffset = netExposureStops(indices) - netExposureStops(baselineRef.current);
   const shutterBlurs = indices.shutter >= 6; // 1/30s o más lento
 
+  // El punto de partida antes solo se calculaba una vez, al montar — si
+  // cambiabas de luz (selector manual en iOS, o el sensor real en Android)
+  // con el triángulo ya abierto, se quedaba pegado a la luz de cuando lo
+  // abriste. `startingIndicesForLux` cuantiza a 4 bandas fijas, así que
+  // comparar contra la banda actual (en vez de resetear en cada cambio de
+  // `lux`) evita que el sensor real de Android — que fluctúa cada
+  // ~500ms — reinicie el triángulo constantemente sin motivo real.
+  useEffect(() => {
+    const fresh = startingIndicesForLux(lux);
+    const changed =
+      fresh.iso !== baselineRef.current.iso ||
+      fresh.aperture !== baselineRef.current.aperture ||
+      fresh.shutter !== baselineRef.current.shutter;
+    if (changed) {
+      baselineRef.current = fresh;
+      setIndices(fresh);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lux]);
+
   // Entra deslizándose desde abajo con física de resorte, como una hoja
   // modal de iOS — se abre una sola vez al montar, no en cada render.
   const translateY = useRef(new Animated.Value(48)).current;
