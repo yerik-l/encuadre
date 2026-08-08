@@ -23,15 +23,14 @@ De la auditoría de disponibilidad para publicar, esto ya está resuelto:
   `ios.bundleIdentifier` y `android.package` en `app.json` (`com.encuadre.app` — cámbialo si
   quieres usar tu propio dominio antes de subir a las tiendas de verdad). Con esto ya se puede
   correr `eas build -p android --profile preview` para sacar el APK de pruebas.
-- **Política de privacidad**: bilingüe, en [`privacy-policy.html`](privacy-policy.html), y ya
-  publicada y en vivo — https://cdn.jsdelivr.net/gh/yerik-l/encuadre@main/privacy-policy.html.
-  Antes estaba en un Artifact de Claude, pero los Artifacts empiezan privados por defecto (un
-  revisor de Apple/Google sin cuenta de Claude no podría abrirlo), así que se movió a este
-  archivo del repo. Como el repo es público, jsDelivr lo sirve directo desde GitHub sin ningún
-  paso extra (GitHub Pages habría sido una alternativa, pero no hizo falta activarlo). Es la URL
-  para poner en App Store Connect / Play Console — el correo de contacto ya es real
-  (`linaresmendez25@gmail.com`). Único detalle: jsDelivr cachea el contenido, así que si se edita
-  el archivo el cambio tarda un rato en reflejarse (no es instantáneo como Pages).
+- **Política de privacidad**: bilingüe, en [`privacy-policy.html`](privacy-policy.html), publicada
+  vía GitHub Pages — https://yerik-l.github.io/encuadre/privacy-policy.html. Antes estuvo en un
+  Artifact de Claude (privado por defecto, un revisor sin cuenta no podría abrirlo) y después se
+  probó servirla directo desde el repo vía jsDelivr sin activar Pages — pero jsDelivr sirve `.html`
+  como `content-type: text/plain` a propósito (por seguridad, para no renderizar HTML ejecutable
+  de cualquier repo), así que un navegador mostraba el código en crudo en vez de la página. GitHub
+  Pages sí sirve `text/html` de verdad — confirmado con `curl` (200, content-type correcto, correo
+  real, ambas secciones ES/EN). Es la URL para App Store Connect / Play Console.
 - **Permiso de cámara denegado permanentemente**: en vez de un botón muerto, ahora detecta
   `canAskAgain` y manda a Configuración con `Linking.openSettings()` (`App.tsx`).
 - **Error boundary** (`src/components/ErrorBoundary.tsx`): una excepción de render ya no deja la
