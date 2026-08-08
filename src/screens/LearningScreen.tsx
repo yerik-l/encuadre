@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { CameraLiveView } from '../components/CameraLiveView';
 import { DepthOfFieldOverlay } from '../components/DepthOfFieldOverlay';
 import { ExposureTriangleWidget } from '../components/ExposureTriangleWidget';
@@ -14,6 +15,8 @@ import { useAmbientLight } from '../hooks/useAmbientLight';
 import { useMotion } from '../hooks/useMotion';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LIGHT_BANDS, type LightBand, type ModeId, type SubjectSpeed, getMode } from '../modes/modes';
+import { colors, radius, spacing, type } from '../theme/theme';
+import { haptics } from '../theme/haptics';
 
 interface Props {
   modeId: ModeId;
@@ -81,12 +84,17 @@ export function LearningScreen({ modeId, onBack }: Props) {
 
       <View style={styles.topBar}>
         <Pressable
-          onPress={onBack}
-          style={styles.backButton}
+          onPress={() => {
+            haptics.tap();
+            onBack();
+          }}
+          style={({ pressed }) => [styles.backButtonWrap, pressed && styles.pressedShrink]}
           accessibilityRole="button"
           accessibilityLabel={t.a11y.backToModes}
         >
-          <Text style={styles.backButtonText}>{t.common.back}</Text>
+          <BlurView intensity={40} tint="dark" style={styles.backButton}>
+            <Text style={styles.backButtonText}>{t.common.back}</Text>
+          </BlurView>
         </Pressable>
         <Text style={styles.modeTitle} accessibilityRole="header">
           {t.modes[mode.id].title}
@@ -103,8 +111,11 @@ export function LearningScreen({ modeId, onBack }: Props) {
         )}
         {mode.showExposureTriangle && !showTriangle && (
           <Pressable
-            style={styles.triangleButton}
-            onPress={() => setShowTriangle(true)}
+            style={({ pressed }) => [styles.triangleButton, pressed && styles.pressedShrink]}
+            onPress={() => {
+              haptics.tap();
+              setShowTriangle(true);
+            }}
             accessibilityRole="button"
             accessibilityLabel={t.exposureTriangle.openButton}
             accessibilityHint={t.exposureTriangle.hint}
@@ -129,32 +140,34 @@ export function LearningScreen({ modeId, onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: colors.background },
   exposureOverlay: StyleSheet.absoluteFill,
   topBar: {
     position: 'absolute',
     top: 56,
-    left: 16,
-    right: 16,
+    left: spacing.lg,
+    right: spacing.lg,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: spacing.md,
   },
+  pressedShrink: { opacity: 0.8, transform: [{ scale: 0.96 }] },
+  backButtonWrap: { borderRadius: radius.pill, overflow: 'hidden' },
   backButton: {
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.md + 2,
+    paddingVertical: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.separator,
   },
-  backButtonText: { color: '#fff', fontSize: 14, fontWeight: '600' },
-  modeTitle: { color: '#fff', fontSize: 15, fontWeight: '700', flexShrink: 1 },
-  topStack: { position: 'absolute', top: 104, left: 16, right: 16, gap: 12 },
+  backButtonText: { color: colors.text, ...type.subhead, fontWeight: '600' },
+  modeTitle: { color: colors.text, ...type.footnote, fontWeight: '700', flexShrink: 1 },
+  topStack: { position: 'absolute', top: 104, left: spacing.lg, right: spacing.lg, gap: spacing.md },
   triangleButton: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    backgroundColor: colors.text,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md + 2,
+    paddingVertical: spacing.sm,
   },
-  triangleButtonText: { color: '#111', fontSize: 12, fontWeight: '700' },
+  triangleButtonText: { color: colors.background, ...type.caption, fontWeight: '700' },
 });

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   line: { color: '#fff', fontSize: 12, fontWeight: '600' },
   tip: { color: '#ccc', fontSize: 11, marginTop: 2, lineHeight: 15 },
   kitToggle: { marginTop: 6 },
-  kitToggleText: { color: '#7fa8ff', fontSize: 11, fontWeight: '700' },
+  kitToggleText: { color: '#0A84FF', fontSize: 11, fontWeight: '700' },
   compactContainer: { marginTop: 6 },
-  compactLine: { color: '#7fa8ff', fontSize: 12, fontWeight: '600' },
+  compactLine: { color: '#0A84FF', fontSize: 12, fontWeight: '600' },
 });

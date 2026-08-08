@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { BlurView } from 'expo-blur';
 import { useLanguage } from '../i18n/LanguageContext';
 import {
   APERTURE_STOPS,
@@ -15,6 +16,8 @@ import {
   type ExposureAxis,
   type ExposureIndices,
 } from '../exposure/exposureTriangle';
+import { colors, radius, spacing, spring, timing, type } from '../theme/theme';
+import { haptics } from '../theme/haptics';
 
 interface Props {
   lux: number | null;
@@ -34,6 +37,17 @@ export function ExposureTriangleWidget({
   const [indices, setIndices] = useState<ExposureIndices>(baselineRef.current);
   const exposureOffset = netExposureStops(indices) - netExposureStops(baselineRef.current);
   const shutterBlurs = indices.shutter >= 6; // 1/30s o más lento
+
+  // Entra deslizándose desde abajo con física de resorte, como una hoja
+  // modal de iOS — se abre una sola vez al montar, no en cada render.
+  const translateY = useRef(new Animated.Value(48)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(translateY, { toValue: 0, ...spring }),
+      Animated.timing(opacity, { toValue: 1, duration: timing.fast, useNativeDriver: true }),
+    ]).start();
+  }, [translateY, opacity]);
 
   function handleChange(axis: ExposureAxis, value: number) {
     const rounded = Math.round(value);
@@ -64,13 +78,17 @@ export function ExposureTriangleWidget({
           : t.exposureTriangle.overExposedMany.replace('{n}', String(exposureOffset));
 
   return (
-    <View style={styles.panel}>
+    <Animated.View style={[styles.panelWrap, { opacity, transform: [{ translateY }] }]}>
+      <BlurView intensity={50} tint="dark" style={styles.panel}>
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">
           {t.exposureTriangle.title}
         </Text>
         <Pressable
-          onPress={onClose}
+          onPress={() => {
+            haptics.tap();
+            onClose();
+          }}
           hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel={t.a11y.closeExposureTriangle}
@@ -115,7 +133,8 @@ export function ExposureTriangleWidget({
         onChange={(v) => handleChange('shutter', v)}
         a11yLabel={t.a11y.shutterSlider}
       />
-    </View>
+      </BlurView>
+    </Animated.View>
   );
 }
 
@@ -160,26 +179,30 @@ function Row({
 }
 
 const styles = StyleSheet.create({
-  panel: {
+  panelWrap: {
     position: 'absolute',
-    left: 16,
-    right: 16,
-    bottom: 32,
-    backgroundColor: 'rgba(0,0,0,0.88)',
-    borderRadius: 16,
-    padding: 16,
+    left: spacing.lg,
+    right: spacing.lg,
+    bottom: spacing.xl,
+    borderRadius: radius.large,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.separator,
+  },
+  panel: {
+    padding: spacing.lg,
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  disclosure: { color: '#888', fontSize: 11, lineHeight: 15, marginTop: -8, marginBottom: 10, fontStyle: 'italic' },
-  title: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  close: { color: '#fff', fontSize: 16, padding: 4 },
-  status: { color: '#7fd88f', fontSize: 12, fontWeight: '700', marginTop: -2, marginBottom: 4 },
-  statusChanged: { color: '#ffb84d' },
-  limitHint: { color: '#888', fontSize: 11, lineHeight: 16, marginBottom: 10 },
-  hint: { color: '#bbb', fontSize: 12, marginTop: 6, marginBottom: 14, lineHeight: 17 },
+  disclosure: { color: colors.textTertiary, fontSize: 11, lineHeight: 15, marginTop: -8, marginBottom: 10, fontStyle: 'italic' },
+  title: { color: colors.text, ...type.headline },
+  close: { color: colors.text, fontSize: 16, padding: 4 },
+  status: { color: '#30D158', ...type.footnote, fontWeight: '700', marginTop: -2, marginBottom: 4 },
+  statusChanged: { color: '#FF9F0A' },
+  limitHint: { color: colors.textTertiary, fontSize: 11, lineHeight: 16, marginBottom: 10 },
+  hint: { color: colors.textSecondary, fontSize: 12, marginTop: 6, marginBottom: 14, lineHeight: 17 },
   row: { marginBottom: 8 },
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between' },
-  rowLabel: { color: '#fff', fontSize: 13, fontWeight: '600' },
-  rowValue: { color: '#fff', fontSize: 13, fontWeight: '700' },
-  rowHint: { color: '#888', fontSize: 11, marginTop: -4 },
+  rowLabel: { color: colors.text, fontSize: 13, fontWeight: '600' },
+  rowValue: { color: colors.text, fontSize: 13, fontWeight: '700' },
+  rowHint: { color: colors.textTertiary, fontSize: 11, marginTop: -4 },
 });

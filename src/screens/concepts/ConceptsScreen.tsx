@@ -7,7 +7,11 @@ import {
   type ItemsConceptContent,
   type SectionsConceptContent,
 } from '../../concepts/concepts';
+import { SlideTransition } from '../../components/SlideTransition';
+import { StaggerItem } from '../../components/StaggerItem';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { colors, radius, spacing, type } from '../../theme/theme';
+import { haptics } from '../../theme/haptics';
 import { ItemsConceptDetail } from './ItemsConceptDetail';
 import { SectionsConceptDetail } from './SectionsConceptDetail';
 
@@ -39,7 +43,10 @@ export function ConceptsScreen({ onBack }: Props) {
     return (
       <SafeAreaView style={styles.container}>
         <Pressable
-          onPress={() => setSelected(null)}
+          onPress={() => {
+            haptics.tap();
+            setSelected(null);
+          }}
           hitSlop={12}
           style={styles.backRow}
           accessibilityRole="button"
@@ -47,16 +54,18 @@ export function ConceptsScreen({ onBack }: Props) {
         >
           <Text style={styles.back}>{t.common.back}</Text>
         </Pressable>
-        <ScrollView contentContainerStyle={styles.detailContent} showsVerticalScrollIndicator={false}>
-          <Text style={styles.detailTitle} accessibilityRole="header">
-            {topic.title}
-          </Text>
-          {concept.shape === 'sections' ? (
-            <SectionsConceptDetail content={content as SectionsConceptContent} />
-          ) : (
-            <ItemsConceptDetail content={content as ItemsConceptContent} />
-          )}
-        </ScrollView>
+        <SlideTransition screenKey={selected}>
+          <ScrollView contentContainerStyle={styles.detailContent} showsVerticalScrollIndicator={false}>
+            <Text style={styles.detailTitle} accessibilityRole="header">
+              {topic.title}
+            </Text>
+            {concept.shape === 'sections' ? (
+              <SectionsConceptDetail content={content as SectionsConceptContent} />
+            ) : (
+              <ItemsConceptDetail content={content as ItemsConceptContent} />
+            )}
+          </ScrollView>
+        </SlideTransition>
       </SafeAreaView>
     );
   }
@@ -81,18 +90,22 @@ export function ConceptsScreen({ onBack }: Props) {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {CONCEPTS.map(({ id }) => (
-          <Pressable
-            key={id}
-            style={styles.card}
-            onPress={() => setSelected(id)}
-            accessibilityRole="button"
-            accessibilityLabel={t.concepts.topics[id].title}
-            accessibilityHint={t.concepts.topics[id].subtitle}
-          >
-            <Text style={styles.cardTitle}>{t.concepts.topics[id].title}</Text>
-            <Text style={styles.cardSubtitle}>{t.concepts.topics[id].subtitle}</Text>
-          </Pressable>
+        {CONCEPTS.map(({ id }, index) => (
+          <StaggerItem key={id} index={index}>
+            <Pressable
+              style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+              onPress={() => {
+                haptics.tap();
+                setSelected(id);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={t.concepts.topics[id].title}
+              accessibilityHint={t.concepts.topics[id].subtitle}
+            >
+              <Text style={styles.cardTitle}>{t.concepts.topics[id].title}</Text>
+              <Text style={styles.cardSubtitle}>{t.concepts.topics[id].subtitle}</Text>
+            </Pressable>
+          </StaggerItem>
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -100,16 +113,17 @@ export function ConceptsScreen({ onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111', padding: 20 },
-  backRow: { marginTop: 12 },
-  back: { color: '#7fa8ff', fontSize: 14, fontWeight: '600' },
-  title: { color: '#fff', fontSize: 26, fontWeight: '800', marginTop: 16 },
-  subtitle: { color: '#aaa', fontSize: 14, marginTop: 8, lineHeight: 20 },
-  list: { marginTop: 24 },
-  listContent: { gap: 10, paddingBottom: 24 },
-  card: { backgroundColor: '#1c1c1e', borderRadius: 16, padding: 16 },
-  cardTitle: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  cardSubtitle: { color: '#9a9a9a', fontSize: 12, marginTop: 3 },
-  detailContent: { paddingTop: 16, paddingBottom: 40 },
-  detailTitle: { color: '#fff', fontSize: 24, fontWeight: '800', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: colors.background, padding: spacing.xl },
+  backRow: { marginTop: spacing.md },
+  back: { color: colors.accent, ...type.subhead, fontWeight: '600' },
+  title: { color: colors.text, ...type.title1, marginTop: spacing.lg },
+  subtitle: { color: colors.textSecondary, ...type.subhead, marginTop: spacing.sm, lineHeight: 20 },
+  list: { marginTop: spacing.xl },
+  listContent: { gap: spacing.sm + 2, paddingBottom: spacing.xl },
+  card: { backgroundColor: colors.surface, borderRadius: radius.large, padding: spacing.lg },
+  cardPressed: { backgroundColor: colors.surfaceElevated, transform: [{ scale: 0.985 }] },
+  cardTitle: { color: colors.text, ...type.headline },
+  cardSubtitle: { color: colors.textSecondary, ...type.caption, marginTop: 3 },
+  detailContent: { paddingTop: spacing.lg, paddingBottom: 40 },
+  detailTitle: { color: colors.text, ...type.title2, marginBottom: spacing.lg },
 });

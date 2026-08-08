@@ -15,6 +15,40 @@ composición, RAW vs. JPEG, histograma, doble exposición y estilos fotográfico
 encontrar un estilo propio, no solo a exponer bien. Se abre desde el banner en la pantalla de
 selección de modo.
 
+## Diseño y transiciones
+
+`src/theme/theme.ts` es la fuente de verdad de color, tipografía, radios y física de animación —
+en vez de valores sueltos por archivo. Los colores no son una paleta inventada: son los colores
+reales del sistema de iOS en modo oscuro (System Colors del HIG de Apple) — `#0A84FF` de acento,
+`#1C1C1E`/`#2C2C2E` de superficie, `#8E8E93` de texto secundario. La tipografía sigue siendo la
+fuente del sistema (San Francisco en iOS, Roboto en Android, sin ninguna fuente custom cargada),
+con una escala de tamaños consistente en vez de números sueltos (`type.headline`, `type.body`,
+etc., calcada de los Text Styles de iOS).
+
+La firma visual es el vidrio esmerilado: `expo-blur` (ya estaba instalado para el desenfoque del
+triángulo) ahora es el material de toda la interfaz flotante — la tarjeta de guía, el panel del
+triángulo, el banner de Conceptos, el botón de "atrás" sobre la cámara — en vez de fondos negros
+planos con opacidad. Encaja doble: es el lenguaje visual real de iOS (Control Center, tab bars) y
+temáticamente es "desenfoque/lente" en una app que enseña fotografía.
+
+Transiciones, todas con la API `Animated` de React Native (sin agregar `react-native-reanimated`
+ni un router):
+- **`FadeTransition`** (`src/components/FadeTransition.tsx`): fundido + leve desplazamiento
+  vertical entre las pantallas de nivel superior sin jerarquía entre sí (tutorial → permiso →
+  selector de modos → cámara → Conceptos), usado desde `App.tsx`.
+- **`SlideTransition`** (`src/components/SlideTransition.tsx`): variante horizontal con física de
+  resorte para navegación con jerarquía — lista → detalle de Conceptos, y entre pasos del
+  tutorial — como un push de `UINavigationController`.
+- **`StaggerItem`** (`src/components/StaggerItem.tsx`): entrada escalonada para listas cortas (las
+  tarjetas de modo, la lista de Conceptos) — cada elemento aparece un poco después del anterior en
+  vez de que la lista entera aparezca de golpe.
+- El panel del triángulo entra deslizándose desde abajo con `Animated.spring()` (física de
+  resorte real, no `timing` con curva fija) — como una hoja modal de iOS.
+- Tarjetas y botones dan feedback de escala al tocar (`pressed && { transform: [{ scale: ... }] }`
+  en el callback de estilo de `Pressable`), y `expo-haptics` (`src/theme/haptics.ts`) agrega un
+  toque táctil ligero en las interacciones principales — envuelto para fallar en silencio si el
+  dispositivo no tiene motor háptico (simulador, web) en vez de romper la interacción.
+
 ## Estado de cara a publicar
 
 De la auditoría de disponibilidad para publicar, esto ya está resuelto:
@@ -304,6 +338,11 @@ src/components/GrainOverlay.tsx          textura de grano simulando ruido de sen
 src/components/GuidanceOverlay.tsx       tarjeta con la explicación y ajustes sugeridos
 src/components/LightConditionPicker.tsx  selector manual de luz (fallback)
 src/components/SubjectSpeedPicker.tsx    selector de velocidad del sujeto (modo Acción)
+src/theme/theme.ts                   colores, tipografía, radios y física de animación (fuente única)
+src/theme/haptics.ts                 envoltorio de expo-haptics, falla en silencio sin motor háptico
+src/components/FadeTransition.tsx    transición entre pantallas de nivel superior sin jerarquía
+src/components/SlideTransition.tsx   transición horizontal para navegación con jerarquía (lista→detalle)
+src/components/StaggerItem.tsx       entrada escalonada para listas cortas (modos, Conceptos)
 src/screens/ModeSelectScreen.tsx     selección de modo + selector de idioma + botón de tutorial
 src/screens/LearningScreen.tsx       pantalla de cámara + guía en vivo
 src/screens/TutorialScreen.tsx       modo tutorial (primera vez + reabrible)

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
+import { BackHandler, LayoutAnimation, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SlideTransition } from '../components/SlideTransition';
 import { useLanguage } from '../i18n/LanguageContext';
+import { colors, radius, spacing, type } from '../theme/theme';
+import { haptics } from '../theme/haptics';
 
 interface Props {
   onFinish: () => void;
@@ -16,8 +19,11 @@ export function TutorialScreen({ onFinish }: Props) {
 
   function handleNext() {
     if (isLastStep) {
+      haptics.success();
       onFinish();
     } else {
+      haptics.select();
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setStepIndex((i) => i + 1);
     }
   }
@@ -25,6 +31,7 @@ export function TutorialScreen({ onFinish }: Props) {
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       if (stepIndex > 0) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setStepIndex((i) => i - 1);
       } else {
         onFinish();
@@ -45,14 +52,16 @@ export function TutorialScreen({ onFinish }: Props) {
         </Pressable>
       </View>
 
-      <View
-        style={styles.content}
-        accessible
-        accessibilityLabel={`${step.title}. ${step.body}`}
-      >
-        <Text style={styles.stepTitle}>{step.title}</Text>
-        <Text style={styles.stepBody}>{step.body}</Text>
-      </View>
+      <SlideTransition screenKey={String(stepIndex)}>
+        <View
+          style={styles.content}
+          accessible
+          accessibilityLabel={`${step.title}. ${step.body}`}
+        >
+          <Text style={styles.stepTitle}>{step.title}</Text>
+          <Text style={styles.stepBody}>{step.body}</Text>
+        </View>
+      </SlideTransition>
 
       <View
         style={styles.dots}
@@ -65,7 +74,7 @@ export function TutorialScreen({ onFinish }: Props) {
       </View>
 
       <Pressable
-        style={styles.nextButton}
+        style={({ pressed }) => [styles.nextButton, pressed && styles.nextButtonPressed]}
         onPress={handleNext}
         accessibilityRole="button"
         accessibilityLabel={isLastStep ? t.tutorial.start : t.tutorial.next}
@@ -79,21 +88,22 @@ export function TutorialScreen({ onFinish }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111', padding: 24 },
+  container: { flex: 1, backgroundColor: colors.background, padding: spacing.xl },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  skip: { color: '#888', fontSize: 14 },
+  title: { color: colors.text, ...type.headline },
+  skip: { color: colors.textSecondary, ...type.subhead },
   content: { flex: 1, justifyContent: 'center' },
-  stepTitle: { color: '#fff', fontSize: 26, fontWeight: '800', marginBottom: 12 },
-  stepBody: { color: '#bbb', fontSize: 16, lineHeight: 24 },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 24 },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
-  dotActive: { backgroundColor: '#fff' },
+  stepTitle: { color: colors.text, ...type.title1, marginBottom: spacing.md },
+  stepBody: { color: colors.textSecondary, ...type.body, lineHeight: 24 },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.xl },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.surfaceElevated },
+  dotActive: { backgroundColor: colors.accent, width: 20 },
   nextButton: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
+    backgroundColor: colors.text,
+    borderRadius: radius.medium,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  nextButtonText: { color: '#111', fontSize: 16, fontWeight: '700' },
+  nextButtonPressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
+  nextButtonText: { color: colors.background, ...type.headline },
 });
