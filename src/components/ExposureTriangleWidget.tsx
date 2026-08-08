@@ -204,5 +204,5 @@ const styles = StyleSheet.create({
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between' },
   rowLabel: { color: colors.text, fontSize: 13, fontWeight: '600' },
   rowValue: { color: colors.text, fontSize: 13, fontWeight: '700' },
-  rowHint: { color: colors.textTertiary, fontSize: 11, marginTop: -4 },
+  rowHint: { color: colors.textSecondary, fontSize: 12, fontWeight: '500', marginTop: -2 },
 });
