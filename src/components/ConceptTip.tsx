@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors, radius, spacing } from '../theme/theme';
 
 export function ConceptTip({ text }: { text: string }) {
   return (
@@ -10,6 +11,6 @@ export function ConceptTip({ text }: { text: string }) {
 }
 
 const styles = StyleSheet.create({
-  box: { backgroundColor: '#1c1c1e', borderRadius: 12, padding: 14, marginTop: 20 },
-  text: { color: '#ddd', fontSize: 14, lineHeight: 20, fontStyle: 'italic' },
+  box: { backgroundColor: colors.surface, borderRadius: radius.medium, padding: spacing.md + 2, marginTop: spacing.xl },
+  text: { color: '#DDDDDD', fontSize: 14, lineHeight: 20, fontStyle: 'italic' },
 });

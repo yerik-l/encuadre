@@ -99,7 +99,16 @@ function AppContent() {
 
   return (
     <>
-      <FadeTransition screenKey={screenKey}>{content}</FadeTransition>
+      {screenKey === 'blank' ? (
+        // Sin FadeTransition acá a propósito: es una pantalla en blanco
+        // mientras se resuelve el permiso/tutorial guardado, invisible al
+        // usuario. Envolverla igual hacía que la primera pantalla real
+        // jugara DOS fundidos seguidos (uno para la pantalla en blanco, otro
+        // para la real) — un arranque visiblemente más lento de lo que es.
+        content
+      ) : (
+        <FadeTransition screenKey={screenKey}>{content}</FadeTransition>
+      )}
       <StatusBar style="light" />
     </>
   );

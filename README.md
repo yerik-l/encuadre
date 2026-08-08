@@ -31,6 +31,13 @@ triángulo, el banner de Conceptos, el botón de "atrás" sobre la cámara — e
 planos con opacidad. Encaja doble: es el lenguaje visual real de iOS (Control Center, tab bars) y
 temáticamente es "desenfoque/lente" en una app que enseña fotografía.
 
+Importante no confundir los dos usos de blur que conviven en la app: este (chrome decorativo,
+`theme.ts`, sin relación con ningún valor de apertura) es uno; `DepthOfFieldOverlay.tsx` (blur
+atado en vivo al valor de apertura del triángulo, con su propio aviso de que es ilustrativo — ver
+`simulationDisclosure`) es otro, completamente distinto. Que ahora haya blur "por todos lados"
+como material decorativo no debería diluir esa distinción — si en algún momento se agrega más
+blur decorativo, que quede claro que no representa ningún valor real de exposición.
+
 Transiciones, todas con la API `Animated` de React Native (sin agregar `react-native-reanimated`
 ni un router):
 - **`FadeTransition`** (`src/components/FadeTransition.tsx`): fundido + leve desplazamiento

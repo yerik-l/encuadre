@@ -2,6 +2,8 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LIGHT_BANDS, type LightBand } from '../modes/modes';
+import { colors, radius, spacing } from '../theme/theme';
+import { haptics } from '../theme/haptics';
 
 interface Props {
   selected: LightBand;
@@ -24,7 +26,10 @@ export function LightConditionPicker({ selected, onSelect }: Props) {
         {LIGHT_BANDS.map((band) => (
           <Pressable
             key={band.id}
-            onPress={() => onSelect(band.id)}
+            onPress={() => {
+              haptics.select();
+              onSelect(band.id);
+            }}
             style={[styles.pill, selected === band.id && styles.pillSelected]}
             accessibilityRole="radio"
             accessibilityState={{ selected: selected === band.id }}
@@ -42,15 +47,15 @@ export function LightConditionPicker({ selected, onSelect }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
-  label: { color: '#fff', fontSize: 13, marginBottom: 8, fontWeight: '600' },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  label: { color: colors.text, fontSize: 13, marginBottom: spacing.sm, fontWeight: '600' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surfaceOverlay,
   },
-  pillSelected: { backgroundColor: '#fff' },
-  pillText: { color: '#fff', fontSize: 12 },
-  pillTextSelected: { color: '#111', fontWeight: '700' },
+  pillSelected: { backgroundColor: colors.text },
+  pillText: { color: colors.text, fontSize: 12 },
+  pillTextSelected: { color: colors.background, fontWeight: '700' },
 });

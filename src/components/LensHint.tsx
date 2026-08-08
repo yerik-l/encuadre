@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { LayoutAnimation, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { ModeId } from '../modes/modes';
+import { colors, radius, spacing } from '../theme/theme';
+import { haptics } from '../theme/haptics';
 
 interface Props {
   modeId: ModeId;
@@ -33,7 +35,11 @@ export function LensHint({ modeId, focalLength, compact }: Props) {
       <Text style={styles.tip}>{lens.tip}</Text>
 
       <Pressable
-        onPress={() => setShowKitTip((v) => !v)}
+        onPress={() => {
+          haptics.select();
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setShowKitTip((v) => !v);
+        }}
         style={styles.kitToggle}
         accessibilityRole="button"
         accessibilityLabel={t.a11y.toggleKitLensTip}
@@ -50,15 +56,15 @@ export function LensHint({ modeId, focalLength, compact }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: colors.surfaceOverlay,
+    borderRadius: radius.small,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
-  line: { color: '#fff', fontSize: 12, fontWeight: '600' },
-  tip: { color: '#ccc', fontSize: 11, marginTop: 2, lineHeight: 15 },
+  line: { color: colors.text, fontSize: 12, fontWeight: '600' },
+  tip: { color: '#CCCCCC', fontSize: 11, marginTop: 2, lineHeight: 15 },
   kitToggle: { marginTop: 6 },
-  kitToggleText: { color: '#0A84FF', fontSize: 11, fontWeight: '700' },
+  kitToggleText: { color: colors.accent, fontSize: 11, fontWeight: '700' },
   compactContainer: { marginTop: 6 },
-  compactLine: { color: '#0A84FF', fontSize: 12, fontWeight: '600' },
+  compactLine: { color: colors.accent, fontSize: 12, fontWeight: '600' },
 });

@@ -232,7 +232,7 @@ const es = {
       },
       {
         title: 'No todo es apuntar la cámara',
-        body: 'El banner "Conceptos" en la pantalla principal tiene 17 temas de referencia — desde el triángulo de exposición hasta estilos fotográficos. Vale la pena explorarlo, sobre todo si algo del vocabulario técnico no te queda claro.',
+        body: 'El banner "Conceptos" en la pantalla principal tiene 19 temas de referencia — desde el triángulo de exposición hasta estilos fotográficos. Vale la pena explorarlo, sobre todo si algo del vocabulario técnico no te queda claro.',
       },
     ],
   },
@@ -957,7 +957,7 @@ const en: Translations = {
       },
       {
         title: "It's not all about pointing the camera",
-        body: 'The "Concepts" banner on the main screen has 17 reference topics — from the exposure triangle to photographic styles. Worth exploring, especially if any of the technical vocabulary isn\'t clear yet.',
+        body: 'The "Concepts" banner on the main screen has 19 reference topics — from the exposure triangle to photographic styles. Worth exploring, especially if any of the technical vocabulary isn\'t clear yet.',
       },
     ],
   },
