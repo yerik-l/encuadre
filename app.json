@@ -50,7 +50,7 @@
     },
     "owner": "yeriklinares",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "fingerprint"
     },
     "updates": {
       "url": "https://u.expo.dev/e126288c-7505-4ca4-a7c5-9483a5f15921"
