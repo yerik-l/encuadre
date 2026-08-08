@@ -176,8 +176,14 @@ eas submit -p ios --latest
 
 ## Pendiente — depende de ti
 
-1. **Apple Developer Program** (inscripción + pago) — bloqueante para todo
-   lo de iOS.
+1. ~~Apple Developer Program~~ — resuelto, cuenta activa
+   (`yeriklinares01@icloud.com`, equipo `UM2B45GSK6`). Con eso ya se hizo
+   todo el camino de iOS en un solo día: certificado de distribución,
+   perfil de aprovisionamiento, build ad-hoc probado en dispositivo real
+   (con varios bugs reales encontrados y corregidos, ver más abajo), build
+   de producción, y **envío a App Store Connect ya completado** — ASC App
+   ID `6799311298`. Falta que Apple termine de procesarlo (10-30 min
+   típico) para que aparezca en TestFlight.
 2. **Google Play Console** (inscripción + pago, si no la tienes ya).
 3. **Ícono final** — ya en proceso tuyo; mantén 1024×1024, RGB, sin canal
    alfa para iOS (el placeholder actual ya cumple ese formato).

@@ -153,6 +153,39 @@ tutorial → permiso de cámara → selector de modos → Conceptos, con `@testi
   que los apretaba a todos en pantallas chicas, con riesgo de que un valor como "f/1.8–f/2.8" se
   cortara. Ahora, cuando `suggestedFocus` está presente, se acomodan en 2×2 en vez de una fila de 4.
 
+### Bugs que solo aparecieron en un iPhone real (ni simulador ni auditoría los hubiera encontrado)
+
+El primer build real de Encuadre (ad-hoc, para probar en dispositivo) reveló varios bugs que
+ninguna revisión de código ni el simulador de iOS podían detectar — necesitaban una cámara real,
+un `UIVisualEffectView` real, y ojos reales mirando la pantalla:
+
+- **El desenfoque de apertura (`DepthOfFieldOverlay`) nunca aparecía en un iPhone real**: los
+  números del triángulo cambiaban, pero ningún blur se veía sobre la cámara en vivo.
+  `UIVisualEffectView` (lo que usa `expo-blur` por debajo) no logra tomar una muestra del
+  contenido de un `AVCaptureVideoPreviewLayer` — la capa de video de la cámara se compone por un
+  camino de hardware que no pasa por el snapshot normal que el blur necesita (problema conocido
+  y documentado, no un prop mal puesto: github.com/expo/expo issues #6613, #3935). En iOS ahora
+  se usa un viñeteado oscuro (opacidad, no blur real) en los bordes — no es óptico tampoco, pero
+  sí se ve consistentemente sobre cualquier contenido. Android no se tocó, porque ahí `expo-blur`
+  usa un mecanismo distinto (`BlurTargetView`) que no tiene este problema.
+- **El grano de ISO (`GrainOverlay`) tampoco aparecía**: causa distinta a la del blur —
+  `resizeMode="repeat"` de `Image` tiene bugs conocidos e inconsistentes entre plataformas y
+  arquitecturas de React Native. Se regeneró la textura de ruido más grande (512×512, antes
+  128×128) y se cambió a `resizeMode="cover"` (estirar una textura en vez de repetir una chica en
+  mosaico) — más simple y confiable. De paso, decisión correcta: el ruido de ISO no es un
+  fenómeno de bordes como la profundidad de campo, así que cubrir toda la pantalla tiene más
+  sentido que limitarlo a tiras.
+- **El texto de ayuda debajo de cada slider era casi ilegible**: usaba `colors.textTertiary`
+  (`#636366`, el gris más tenue de la paleta) sobre un fondo de cámara con blur y brillo variable
+  — subido a `colors.textSecondary` (`#8E8E93`) con un poco más de peso.
+- **El triángulo no se resincronizaba si cambiabas de luz mientras estaba abierto**: el punto de
+  partida (`baselineRef`) se calculaba una sola vez, al montar (`useRef(startingIndicesForLux(lux))`)
+  — cambiar el selector manual de luz (o que el sensor real de Android fluctuara) con el panel ya
+  abierto no lo actualizaba. Se agregó un efecto que compara la banda de luz actual contra la
+  nueva y solo reinicia si de verdad cambió de banda — comparar por valor en vez de resetear en
+  cada cambio de `lux` importa en Android, donde el sensor real dispara lecturas cada ~500ms y un
+  reseteo ingenuo hubiera borrado la exploración del usuario constantemente sin motivo real.
+
 ## Bugs de contenido encontrados en una revisión editorial (no de código)
 
 Se hizo una pasada del contenido como la haría un instructor de fotografía, no solo un
