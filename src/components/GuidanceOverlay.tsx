@@ -15,14 +15,27 @@ export function GuidanceOverlay({ guidance }: { guidance: Guidance }) {
         <Text style={styles.headline}>{guidance.headline}</Text>
         <Text style={styles.detail}>{guidance.detail}</Text>
       </ScrollView>
-      <View style={styles.settingsRow}>
-        <SettingChip label={t.chips.iso} value={guidance.suggestedIso} />
-        <SettingChip label={t.chips.aperture} value={guidance.suggestedAperture} />
-        <SettingChip label={t.chips.shutter} value={guidance.suggestedShutter} />
-        {guidance.suggestedFocus && (
-          <SettingChip label={t.chips.focus} value={guidance.suggestedFocus} />
-        )}
-      </View>
+      {guidance.suggestedFocus ? (
+        // 4 chips (solo el modo 'enfoque'): en fila los 4 se aprietan
+        // demasiado en pantallas chicas (ej. iPhone SE) y "f/1.8–f/2.8" se
+        // corta o se envuelve — se acomodan en 2x2 en vez de forzar la fila.
+        <>
+          <View style={styles.settingsRow}>
+            <SettingChip label={t.chips.iso} value={guidance.suggestedIso} />
+            <SettingChip label={t.chips.aperture} value={guidance.suggestedAperture} />
+          </View>
+          <View style={[styles.settingsRow, styles.settingsRowSecond]}>
+            <SettingChip label={t.chips.shutter} value={guidance.suggestedShutter} />
+            <SettingChip label={t.chips.focus} value={guidance.suggestedFocus} />
+          </View>
+        </>
+      ) : (
+        <View style={styles.settingsRow}>
+          <SettingChip label={t.chips.iso} value={guidance.suggestedIso} />
+          <SettingChip label={t.chips.aperture} value={guidance.suggestedAperture} />
+          <SettingChip label={t.chips.shutter} value={guidance.suggestedShutter} />
+        </View>
+      )}
     </View>
   );
 }
@@ -31,7 +44,9 @@ function SettingChip({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.chip}>
       <Text style={styles.chipLabel}>{label}</Text>
-      <Text style={styles.chipValue}>{value}</Text>
+      <Text style={styles.chipValue} numberOfLines={1} adjustsFontSizeToFit>
+        {value}
+      </Text>
     </View>
   );
 }
@@ -50,11 +65,13 @@ const styles = StyleSheet.create({
   headline: { color: '#fff', fontSize: 17, fontWeight: '700' },
   detail: { color: '#e5e5e5', fontSize: 14, lineHeight: 20, marginTop: 6 },
   settingsRow: { flexDirection: 'row', gap: 12, marginTop: 12 },
+  settingsRowSecond: { marginTop: 8 },
   chip: {
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.12)',
     borderRadius: 10,
     paddingVertical: 8,
+    paddingHorizontal: 4,
     alignItems: 'center',
   },
   chipLabel: { color: '#aaa', fontSize: 11, textTransform: 'uppercase' },

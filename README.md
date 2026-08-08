@@ -103,6 +103,15 @@ tutorial → permiso de cámara → selector de modos → Conceptos, con `@testi
   como costosos en Android. `handleChange` ahora compara contra el valor actual del eje antes de
   llamar a `setIndices`, y devuelve la misma referencia de estado si no cambió (React se salta el
   render).
+- **El botón físico de "atrás" en Android solo estaba conectado en `LearningScreen`** — en
+  `TutorialScreen` y `ConceptsScreen` (que tiene su propia navegación interna lista → detalle)
+  no había ningún `BackHandler`, así que presionarlo ahí cerraba la app entera en vez de retroceder
+  un paso. Encontrado en la segunda ronda de auditoría (3 revisores en paralelo otra vez, después
+  de agregar el modo Enfoque) — se agregó el mismo patrón de `BackHandler` a las dos pantallas.
+- **`GuidanceOverlay` no tenía espacio pensado para un 4to chip**: los 3 chips (ISO/apertura/
+  obturador) usaban `flex: 1` en una sola fila; el modo Enfoque agrega un 4to (`suggestedFocus`)
+  que los apretaba a todos en pantallas chicas, con riesgo de que un valor como "f/1.8–f/2.8" se
+  cortara. Ahora, cuando `suggestedFocus` está presente, se acomodan en 2×2 en vez de una fila de 4.
 
 ## Bugs de contenido encontrados en una revisión editorial (no de código)
 
@@ -134,6 +143,25 @@ desarrollador. Encontró un error real de dominio, no solo de UI:
   por defecto — un revisor de Apple/Google sin cuenta de Claude no podría abrirla al enviar la
   app a revisión. Se movió a [`privacy-policy.html`](privacy-policy.html), un archivo
   autocontenido en el repo listo para hostear donde quieras (ver "Estado de cara a publicar").
+- **`paisaje` tenía el mismo tipo de bug que el de Acción, sin corregir**: reusaba `lightLabel()`
+  con aperturas cerradas (f/8-f/16, para tener todo en foco), que necesitan mucha más luz que las
+  aperturas abiertas de retrato para la misma velocidad. Un exterior nublado normal (~3000 lux, el
+  propio valor de referencia de `LIGHT_BANDS`) caía en la banda "medio" con velocidades sugeridas
+  de 1/60-1/125 — subexponiendo por 1.5-2 paradas según la matemática real de exposición. El corte
+  de "brillante" a 15,000 lux tenía el problema inverso: pedía 1/250-1/500 cuando la regla real
+  de "sunny 16" da más como 1/60-1/125 incluso a pleno mediodía. Se agregó `paisajeLightLabel()`
+  con cortes y velocidades recalibrados.
+- **En el modo Enfoque, la velocidad de obturación sugerida no variaba según qué tan rápido se
+  mueve el sujeto** — dependía solo de la banda de luz, así que practicar AF-C con un sujeto
+  "rápido" en luz media daba la misma velocidad (1/125-1/250) que uno "lento", suficiente para
+  que el enfoque funcione pero no para congelar el movimiento — dando la falsa impresión de que
+  acertar el AF-C ya garantiza una foto nítida. Ahora la velocidad sigue la velocidad del sujeto,
+  igual que en Acción.
+- **El único APK de Android que existía era del scaffold vacío de `create-expo-app`, no de la app
+  real** — se había generado antes de que expo-camera, expo-sensors y todo el código de la app
+  llegaran al repositorio (commit `3a756a3`, "Initial commit"). Cualquiera que lo hubiera instalado
+  para probar Encuadre en un dispositivo real estaba abriendo una pantalla en blanco, no la app.
+  Se generó un build nuevo desde el código actual.
 
 ## Los 7 modos
 
@@ -265,7 +293,7 @@ alcance), y el tip explica qué hacer al respecto (acercarse, subir ISO, etc.).
 App.tsx                          punto de entrada: permiso de cámara, tutorial, idioma
 src/i18n/translations.ts         todo el texto de la app, en español e inglés
 src/i18n/LanguageContext.tsx     contexto de idioma (detecta el del teléfono, se puede cambiar)
-src/modes/modes.ts               definición de los 4 modos + lógica de guía (recibe traducciones)
+src/modes/modes.ts               definición de los 7 modos + lógica de guía (recibe traducciones)
 src/exposure/exposureTriangle.ts matemática del triángulo de exposición interactivo
 src/hooks/useAmbientLight.ts     lectura del sensor de luz (Android) / null en iOS
 src/hooks/useMotion.ts           magnitud suavizada del giroscopio
@@ -300,7 +328,7 @@ pantalla nueva por cada tema.
 
 El supuesto más riesgoso de todo el producto sigue sin validar: que mirar el teléfono y luego
 ajustar la cámara real se sienta natural y no como fricción extra. Antes de invertir más tiempo
-puliendo estos 4 modos, vale la pena probarlo con 5-10 personas que acaban de comprar su primera
+puliendo estos 7 modos, vale la pena probarlo con 5-10 personas que acaban de comprar su primera
 cámara.
 
 ## Fuera de alcance de este MVP

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { BackHandler, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   CONCEPTS,
@@ -18,6 +18,18 @@ interface Props {
 export function ConceptsScreen({ onBack }: Props) {
   const { t } = useLanguage();
   const [selected, setSelected] = useState<ConceptId | null>(null);
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (selected) {
+        setSelected(null);
+      } else {
+        onBack();
+      }
+      return true;
+    });
+    return () => subscription.remove();
+  }, [selected, onBack]);
 
   if (selected) {
     const concept = CONCEPTS.find((c) => c.id === selected)!;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -21,6 +21,18 @@ export function TutorialScreen({ onFinish }: Props) {
       setStepIndex((i) => i + 1);
     }
   }
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (stepIndex > 0) {
+        setStepIndex((i) => i - 1);
+      } else {
+        onFinish();
+      }
+      return true;
+    });
+    return () => subscription.remove();
+  }, [stepIndex, onFinish]);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -75,6 +75,36 @@ describe('retratoEstudio — bandas calibradas a luz interior real', () => {
   });
 });
 
+describe('paisaje — bandas de luz calibradas a apertura cerrada', () => {
+  const mode = getMode('paisaje');
+
+  it('exterior nublado normal (~3000 lux) ya no subexpone como con las bandas genéricas', () => {
+    // Bug real: reusar lightLabel() (banda "medio" 50-15000 lux) sugería
+    // 1/60-1/125 a f/8-11 para cualquier punto de esa banda — a 3000 lux
+    // (el propio valor de referencia "exterior_nublado" de LIGHT_BANDS) eso
+    // subexpone por 1.5-2 paradas siguiendo la matemática real de
+    // exposición. paisajeLightLabel() separa esta banda con velocidades
+    // más lentas y acordes a lo que una apertura cerrada necesita.
+    const g = mode.getGuidance({ lux: 3000, motionMagnitude: 0 }, t);
+    expect(g.suggestedShutter).toBe('1/30–1/125');
+    expect(g.suggestedIso).toBe('100–400');
+  });
+
+  it('justo pasando el umbral de "brillante" (15000 lux) ya no exige velocidades de sunny-16 real', () => {
+    // El otro lado del mismo bug: "brillante" arrancaba en 15000 lux con
+    // 1/250-1/500 a f/11-16 — mucho más rápido que lo que la regla real de
+    // "sunny 16" permite incluso a pleno mediodía (ISO 100, f/16 ≈ 1/100).
+    const g = mode.getGuidance({ lux: 15000, motionMagnitude: 0 }, t);
+    expect(g.suggestedShutter).toBe('1/60–1/125');
+  });
+
+  it('luz muy baja (<500 lux) sigue pidiendo trípode', () => {
+    const g = mode.getGuidance({ lux: 100, motionMagnitude: 0 }, t);
+    expect(g.suggestedShutter).toBe('≤1/15');
+    expect(g.suggestedIso).toBe('400–800');
+  });
+});
+
 describe('barrido — la velocidad sugerida sigue la firmeza del movimiento', () => {
   const mode = getMode('barrido');
 
@@ -153,6 +183,18 @@ describe('enfoque — AF-S/AF-C según velocidad del sujeto, aviso de poca luz',
   it('con luz normal no agrega el aviso de poca luz', () => {
     const g = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'medio' }, t);
     expect(g.detail).not.toContain(t.guidance.enfoque.lowLightWarning);
+  });
+
+  it('la velocidad de obturación sigue la velocidad del sujeto, no solo la luz', () => {
+    // Bug real: antes suggestedShutter dependía solo de la banda de luz —
+    // un sujeto "rápido" en luz media recibía la misma velocidad que uno
+    // "lento" (suficiente para enfocar, pero no para congelar movimiento).
+    const lento = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'lento' }, t);
+    const medio = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'medio' }, t);
+    const rapido = mode.getGuidance({ lux: 1000, motionMagnitude: 0, subjectSpeed: 'rapido' }, t);
+    expect(lento.suggestedShutter).toBe('1/125');
+    expect(medio.suggestedShutter).toBe('1/250–1/500');
+    expect(rapido.suggestedShutter).toBe('1/500–1/1000');
   });
 });
 

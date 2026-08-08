@@ -91,6 +91,26 @@ function indoorLightLabel(lux: number | null): 'oscuro' | 'medio' | 'brillante' 
 }
 
 /**
+ * `paisaje` sugiere aperturas cerradas (f/8-f/16, para tener todo en foco),
+ * que necesitan mucha más luz que las aperturas abiertas de retrato para la
+ * misma velocidad — reusar lightLabel() (banda "medio" de 50 a 15,000 lux)
+ * hacía que un exterior nublado normal (~3000 lux, el propio valor de
+ * referencia de "exterior_nublado" en LIGHT_BANDS) cayera en "medio" con
+ * velocidades sugeridas (1/60-1/125) que subexponen la foto por 1.5-2
+ * paradas siguiendo la matemática real de exposición. El corte de
+ * "brillante" a 15,000 lux tenía el mismo problema en el otro sentido: a
+ * pleno sol necesitas más como 1/60-1/125 a f/16 e ISO 100 (la regla
+ * "sunny 16"), no 1/250-1/500 como decía antes. Cortes y velocidades
+ * recalibrados a lo que realmente necesita una apertura cerrada.
+ */
+function paisajeLightLabel(lux: number | null): 'oscuro' | 'medio' | 'brillante' {
+  if (lux === null) return 'medio';
+  if (lux < 500) return 'oscuro';
+  if (lux < 15000) return 'medio';
+  return 'brillante';
+}
+
+/**
  * `accion` dispara a velocidades mucho más rápidas (1/250 a 1/1000+) que el
  * resto de los modos, que rondan 1/125-1/250 — cada parada de obturador más
  * rápida exige una parada más de ISO para mantener la misma exposición a la
@@ -152,7 +172,7 @@ const paisaje: ModeDefinition = {
   showExposureTriangle: true,
   focalLength: '16–35mm',
   getGuidance: ({ lux }, t) => {
-    const band = lightLabel(lux);
+    const band = paisajeLightLabel(lux);
     const text = t.guidance.paisaje[band];
     if (band === 'oscuro') {
       return {
@@ -165,16 +185,16 @@ const paisaje: ModeDefinition = {
     if (band === 'medio') {
       return {
         ...text,
-        suggestedIso: '100–200',
+        suggestedIso: '100–400',
         suggestedAperture: 'f/8–f/11',
-        suggestedShutter: '1/60–1/125',
+        suggestedShutter: '1/30–1/125',
       };
     }
     return {
       ...text,
       suggestedIso: '100',
       suggestedAperture: 'f/11–f/16',
-      suggestedShutter: '1/250–1/500',
+      suggestedShutter: '1/60–1/125',
     };
   },
 };
@@ -347,6 +367,15 @@ const enfoque: ModeDefinition = {
       ? `${text.detail} ${t.guidance.enfoque.lowLightWarning}`
       : text.detail;
     const suggestedFocus = subjectSpeed === 'lento' ? 'AF-S' : 'AF-C';
+    // La velocidad de obturación sigue la velocidad del sujeto (igual que en
+    // 'accion') — antes se ligaba solo a la banda de luz, así que un sujeto
+    // "rápido" en luz media recibía la misma velocidad que uno "lento",
+    // suficiente para el enfoque pero no para congelar el movimiento.
+    const shutterBySpeed: Record<SubjectSpeed, string> = {
+      lento: '1/125',
+      medio: '1/250–1/500',
+      rapido: '1/500–1/1000',
+    };
 
     if (band === 'oscuro') {
       return {
@@ -354,7 +383,7 @@ const enfoque: ModeDefinition = {
         detail,
         suggestedIso: '800–1600',
         suggestedAperture: 'f/1.8–f/2.8',
-        suggestedShutter: '1/125+',
+        suggestedShutter: shutterBySpeed[subjectSpeed],
         suggestedFocus,
       };
     }
@@ -364,7 +393,7 @@ const enfoque: ModeDefinition = {
         detail,
         suggestedIso: '100–400',
         suggestedAperture: 'f/2.0–f/4.0',
-        suggestedShutter: '1/125–1/250',
+        suggestedShutter: shutterBySpeed[subjectSpeed],
         suggestedFocus,
       };
     }
@@ -373,7 +402,7 @@ const enfoque: ModeDefinition = {
       detail,
       suggestedIso: '100',
       suggestedAperture: 'f/4.0–f/5.6',
-      suggestedShutter: '1/500–1/1000',
+      suggestedShutter: shutterBySpeed[subjectSpeed],
       suggestedFocus,
     };
   },

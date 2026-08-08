@@ -183,12 +183,26 @@ eas submit -p ios --latest
    alfa para iOS (el placeholder actual ya cumple ese formato).
 4. ~~Correo real de contacto en la política de privacidad~~ — resuelto,
    `privacy-policy.html` ya usa `linaresmendez25@gmail.com`.
-5. ~~Hostear la política de privacidad~~ — resuelto. Ya está en vivo, servida
-   por jsDelivr directo desde el repo público (no hizo falta GitHub Pages):
-   **https://cdn.jsdelivr.net/gh/yerik-l/encuadre@main/privacy-policy.html**.
-   Esa es la URL para App Store Connect / Play Console. Detalle: jsDelivr
-   cachea el contenido, así que una edición futura del archivo tarda un rato
-   en reflejarse ahí.
+5. **Hostear la política de privacidad — sigue pendiente, la vía por
+   jsDelivr no sirve.** El plan anterior (servirla directo desde el repo
+   público vía `https://cdn.jsdelivr.net/gh/yerik-l/encuadre@main/privacy-policy.html`,
+   sin GitHub Pages) parecía funcionar, pero al verificar con
+   `curl -sI` el header real es `content-type: text/plain` +
+   `x-content-type-options: nosniff` — un navegador (o el revisor de
+   Apple/Google) ve el código HTML en crudo en vez de la página con
+   formato. jsDelivr hace esto a propósito por seguridad (no renderiza HTML
+   ejecutable desde cualquier repo). **Sí hace falta GitHub Pages** después
+   de todo:
+   1. En GitHub → tu repo → **Settings → Pages**
+   2. **Source: Deploy from a branch**
+   3. **Branch: `main`**, carpeta **`/ (root)`**, **Save**
+   4. Esperar 1-2 min y confirmar que en esa misma página aparece
+      "Your site is live at..." con un check verde antes de usar la URL —
+      la vez anterior se guardó pero nunca terminó de activarse
+      (`api.github.com/repos/.../pages` devolvía 404), así que esta vez
+      avísame cuando la veas activa y la verifico con `curl` antes de darla
+      por buena.
+   La URL final sería `https://yerik-l.github.io/encuadre/privacy-policy.html`.
 6. **Feature graphic de Play Store** (1024×500) — gráfico promocional
    obligatorio para la ficha de Android, no lo generé porque es una pieza de
    diseño de marca, igual que el ícono.
@@ -202,5 +216,5 @@ eas submit -p ios --latest
    tanda por tamaño de pantalla (recomendado: 6.7", puede reusarse si Apple
    no exige las demás tras subir esa). Las de iOS mejor esperarlas a cuando
    tengas TestFlight funcionando con un build real.
-7. **Clasificación de edad** (cuestionario) en ambas tiendas — preguntas de
+8. **Clasificación de edad** (cuestionario) en ambas tiendas — preguntas de
    contenido que solo tú puedes responder con certeza legal.
