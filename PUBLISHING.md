@@ -195,7 +195,7 @@ eas submit -p ios --latest
 7. **Screenshots** — mejor tomarlas desde tu Android real (ya lo tienes
    configurado y probado con el APK) que desde el simulador de iOS: el
    simulador no tiene cámara física, así que cualquier pantalla de un modo
-   (las 6 usan `CameraLiveView`) saldría en negro o rota — solo Tutorial,
+   (los 7 usan `CameraLiveView`) saldría en negro o rota — solo Tutorial,
    selector de modos y Conceptos se verían bien, y ni siquiera tengo Expo Go
    instalado en el simulador ahora mismo para generarlas. Para Play Store
    necesitas mínimo 2 (hasta 8) capturas de teléfono; para App Store, una
