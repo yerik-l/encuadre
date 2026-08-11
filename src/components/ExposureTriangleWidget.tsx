@@ -33,9 +33,9 @@ export function ExposureTriangleWidget({
   onIndicesChange,
 }: Props) {
   const { t } = useLanguage();
-  const baselineRef = useRef<ExposureIndices>(startingIndicesForLux(lux));
-  const [indices, setIndices] = useState<ExposureIndices>(baselineRef.current);
-  const exposureOffset = netExposureStops(indices) - netExposureStops(baselineRef.current);
+  const [baseline, setBaseline] = useState<ExposureIndices>(() => startingIndicesForLux(lux));
+  const [indices, setIndices] = useState<ExposureIndices>(baseline);
+  const exposureOffset = netExposureStops(indices) - netExposureStops(baseline);
   const shutterBlurs = indices.shutter >= 6; // 1/30s o más lento
 
   // El punto de partida antes solo se calculaba una vez, al montar — si
@@ -45,17 +45,20 @@ export function ExposureTriangleWidget({
   // comparar contra la banda actual (en vez de resetear en cada cambio de
   // `lux`) evita que el sensor real de Android — que fluctúa cada
   // ~500ms — reinicie el triángulo constantemente sin motivo real.
+  //
+  // Importante: esto SOLO actualiza `baseline`, nunca `indices` — un primer
+  // intento reseteaba los dos, así que si estabas explorando el triángulo
+  // (sliders movidos a propósito) y la luz cambiaba de banda, tu exploración
+  // se borraba sin aviso. Ahora el cambio de luz se refleja en
+  // `exposureOffset` (la foto real quedaría más o menos expuesta que antes),
+  // sin tocar dónde dejaste cada control.
   useEffect(() => {
     const fresh = startingIndicesForLux(lux);
-    const changed =
-      fresh.iso !== baselineRef.current.iso ||
-      fresh.aperture !== baselineRef.current.aperture ||
-      fresh.shutter !== baselineRef.current.shutter;
-    if (changed) {
-      baselineRef.current = fresh;
-      setIndices(fresh);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setBaseline((prev) => {
+      const changed =
+        fresh.iso !== prev.iso || fresh.aperture !== prev.aperture || fresh.shutter !== prev.shutter;
+      return changed ? fresh : prev;
+    });
   }, [lux]);
 
   // Entra deslizándose desde abajo con física de resorte, como una hoja
