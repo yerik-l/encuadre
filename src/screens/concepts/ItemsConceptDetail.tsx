@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ConceptTip } from '../../components/ConceptTip';
 import type { ItemsConceptContent } from '../../concepts/concepts';
+import { colors, radius, spacing } from '../../theme/theme';
 
 export function ItemsConceptDetail({ content }: { content: ItemsConceptContent }) {
   return (
@@ -27,21 +28,27 @@ export function ItemsConceptDetail({ content }: { content: ItemsConceptContent }
 }
 
 const styles = StyleSheet.create({
-  intro: { color: '#ccc', fontSize: 15, lineHeight: 22, marginBottom: 20 },
-  itemsLabel: { color: '#0A84FF', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', marginBottom: 10 },
-  item: { backgroundColor: '#1c1c1e', borderRadius: 12, padding: 14, marginBottom: 10 },
-  itemName: { color: '#fff', fontSize: 15, fontWeight: '700' },
-  itemDescription: { color: '#bbb', fontSize: 13, lineHeight: 19, marginTop: 3 },
-  itemExtra: { color: '#0A84FF', fontSize: 12, lineHeight: 17, marginTop: 6, fontStyle: 'italic' },
+  intro: { color: '#CCCCCC', fontSize: 15, lineHeight: 22, marginBottom: 20 },
+  itemsLabel: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    marginBottom: 10,
+  },
+  item: { backgroundColor: colors.surface, borderRadius: radius.medium, padding: spacing.md + 2, marginBottom: 10 },
+  itemName: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  itemDescription: { color: '#BBBBBB', fontSize: 13, lineHeight: 19, marginTop: 3 },
+  itemExtra: { color: colors.accent, fontSize: 12, lineHeight: 17, marginTop: 6, fontStyle: 'italic' },
   brandNoteBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(10,132,255,0.14)',
-    borderRadius: 8,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.small - 2,
     borderWidth: 1,
-    borderColor: 'rgba(10,132,255,0.35)',
+    borderColor: 'rgba(232,163,61,0.35)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     marginTop: 8,
   },
-  brandNoteText: { color: '#0A84FF', fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
+  brandNoteText: { color: colors.accent, fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
 });

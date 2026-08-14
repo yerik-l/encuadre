@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { BlurView } from 'expo-blur';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -62,15 +62,20 @@ export function ExposureTriangleWidget({
   }, [lux]);
 
   // Entra deslizándose desde abajo con física de resorte, como una hoja
-  // modal de iOS — se abre una sola vez al montar, no en cada render.
+  // modal de iOS — se abre una sola vez al montar, no en cada render. El
+  // `scale` de 0.94→1 encima del slide es a propósito una referencia sutil
+  // a un diafragma abriéndose, no solo una hoja modal genérica — el panel
+  // ES el triángulo de exposición, tiene sentido que entre como una apertura.
   const translateY = useRef(new Animated.Value(48)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.94)).current;
   useEffect(() => {
     Animated.parallel([
       Animated.spring(translateY, { toValue: 0, ...spring }),
+      Animated.spring(scale, { toValue: 1, ...spring }),
       Animated.timing(opacity, { toValue: 1, duration: timing.fast, useNativeDriver: true }),
     ]).start();
-  }, [translateY, opacity]);
+  }, [translateY, opacity, scale]);
 
   function handleChange(axis: ExposureAxis, value: number) {
     const rounded = Math.round(value);
@@ -100,8 +105,24 @@ export function ExposureTriangleWidget({
           ? t.exposureTriangle.overExposedOne
           : t.exposureTriangle.overExposedMany.replace('{n}', String(exposureOffset));
 
+  // `accessibilityLiveRegion="polite"` en el <Text> de abajo solo funciona en
+  // Android — iOS no tiene equivalente para ese prop, así que VoiceOver
+  // nunca se enteraba de que la exposición cambió si el foco seguía en el
+  // slider. `announceForAccessibility` es la forma real de anunciarlo en
+  // iOS. Se salta el primer render (mount) para no anunciar "exposición
+  // correcta" apenas se abre el panel, antes de que el usuario haga nada.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    AccessibilityInfo.announceForAccessibility(exposureStatus);
+  }, [exposureStatus]);
+
   return (
-    <Animated.View style={[styles.panelWrap, { opacity, transform: [{ translateY }] }]}>
+    <Animated.View style={[styles.panelWrap, { opacity, transform: [{ translateY }, { scale }] }]}>
       <BlurView intensity={50} tint="dark" style={styles.panel}>
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">
@@ -119,6 +140,11 @@ export function ExposureTriangleWidget({
           <Text style={styles.close}>✕</Text>
         </Pressable>
       </View>
+      <TriangleDiagram
+        isoDistance={Math.abs(indices.iso - baseline.iso) / (ISO_STOPS.length - 1)}
+        apertureDistance={Math.abs(indices.aperture - baseline.aperture) / (APERTURE_STOPS.length - 1)}
+        shutterDistance={Math.abs(indices.shutter - baseline.shutter) / (SHUTTER_STOPS.length - 1)}
+      />
       <Text style={styles.hint}>{t.exposureTriangle.hint}</Text>
       <Text style={styles.disclosure}>{t.exposureTriangle.simulationDisclosure}</Text>
       <Text
@@ -161,6 +187,49 @@ export function ExposureTriangleWidget({
   );
 }
 
+/**
+ * El propio triángulo, literal — la app se llama "triángulo de exposición"
+ * pero el control en sí eran tres barras apiladas sin nada geométrico que
+ * lo conectara con el nombre. Tres puntos en formación de triángulo (ISO
+ * arriba, apertura y obturador abajo), cada uno se ilumina según qué tan
+ * lejos está ese eje de su punto de partida — mover el ISO enciende la
+ * esquina de ISO, sin importar que las otras dos compensen en silencio.
+ * Sin líneas conectando los puntos a propósito: en RN dibujar una diagonal
+ * limpia necesita SVG o transforms con rotate, y tres puntos ya se leen
+ * como triángulo por la sola posición — no hacía falta la dependencia.
+ */
+function TriangleDiagram({
+  isoDistance,
+  apertureDistance,
+  shutterDistance,
+}: {
+  isoDistance: number;
+  apertureDistance: number;
+  shutterDistance: number;
+}) {
+  return (
+    <View style={styles.diagram}>
+      <TriangleDot distance={isoDistance} style={styles.diagramDotTop} />
+      <TriangleDot distance={apertureDistance} style={styles.diagramDotLeft} />
+      <TriangleDot distance={shutterDistance} style={styles.diagramDotRight} />
+    </View>
+  );
+}
+
+function TriangleDot({ distance, style }: { distance: number; style: object }) {
+  // 0 = en el punto de partida (apagado), 1 = en el extremo opuesto (encendido).
+  const opacity = 0.3 + Math.min(distance, 1) * 0.7;
+  const size = 7 + Math.min(distance, 1) * 8;
+  return (
+    <View
+      style={[
+        style,
+        { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.accent, opacity },
+      ]}
+    />
+  );
+}
+
 function Row({
   label,
   value,
@@ -180,7 +249,7 @@ function Row({
 }) {
   return (
     <View style={styles.row}>
-      <View style={styles.rowHeader}>
+      <View style={styles.rowHeader} accessible accessibilityLabel={`${label}: ${value}`}>
         <Text style={styles.rowLabel}>{label}</Text>
         <Text style={styles.rowValue}>{value}</Text>
       </View>
@@ -216,6 +285,10 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  diagram: { height: 46, marginTop: spacing.md, alignItems: 'center' },
+  diagramDotTop: { position: 'absolute', top: 0, left: '50%', marginLeft: -6 },
+  diagramDotLeft: { position: 'absolute', bottom: 0, left: '32%' },
+  diagramDotRight: { position: 'absolute', bottom: 0, right: '32%' },
   disclosure: { color: colors.textTertiary, fontSize: 11, lineHeight: 15, marginTop: -8, marginBottom: 10, fontStyle: 'italic' },
   title: { color: colors.text, ...type.headline },
   close: { color: colors.text, fontSize: 16, padding: 4 },
@@ -226,6 +299,6 @@ const styles = StyleSheet.create({
   row: { marginBottom: 8 },
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between' },
   rowLabel: { color: colors.text, fontSize: 13, fontWeight: '600' },
-  rowValue: { color: colors.text, fontSize: 13, fontWeight: '700' },
+  rowValue: { color: colors.text, fontSize: 13, fontWeight: '700', fontVariant: ['tabular-nums'] },
   rowHint: { color: colors.textSecondary, fontSize: 12, fontWeight: '500', marginTop: -2 },
 });

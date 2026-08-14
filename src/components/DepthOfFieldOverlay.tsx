@@ -35,7 +35,11 @@ export function DepthOfFieldOverlay({ strength, blurTarget }: Props) {
   const edgeSize = 28 + strength * 64;
 
   if (Platform.OS === 'ios') {
-    const opacity = 0.16 + strength * 0.5;
+    // Sin piso: antes empezaba en 0.16 de opacidad apenas `strength` pasaba
+    // de 0, así que el primer tope de apertura hacía aparecer el viñeteado
+    // de golpe en vez de entrar gradual. Ahora escala desde 0 de verdad —
+    // en f/22 (strength=0) no hay ningún efecto, ni siquiera un asomo.
+    const opacity = strength * 0.66;
     return (
       <>
         <View pointerEvents="none" style={[styles.top, styles.tint, { height: edgeSize, opacity }]} />
@@ -46,7 +50,8 @@ export function DepthOfFieldOverlay({ strength, blurTarget }: Props) {
     );
   }
 
-  const intensity = 8 + strength * 42;
+  // Mismo motivo que arriba: sin piso, escala desde 0 de verdad.
+  const intensity = strength * 50;
   const edgeProps = {
     tint: 'default' as const,
     intensity,

@@ -102,12 +102,20 @@ export function LearningScreen({ modeId, onBack }: Props) {
       </View>
 
       <View style={styles.topStack}>
-        <LensHint modeId={mode.id} focalLength={mode.focalLength} />
-        {!sensorAvailable && (
-          <LightConditionPicker selected={manualBand} onSelect={setManualBand} />
-        )}
-        {mode.usesSubjectSpeedInput && (
-          <SubjectSpeedPicker selected={subjectSpeed} onSelect={setSubjectSpeed} />
+        {/* Se ocultan mientras el triángulo está abierto — no hace falta verlos
+            simultáneamente, y en pantallas chicas (iPhone SE) el panel del
+            triángulo puede ser más alto que el espacio libre entre el header
+            y donde terminaría este stack, con riesgo real de que se tapen. */}
+        {!showTriangle && (
+          <>
+            <LensHint modeId={mode.id} focalLength={mode.focalLength} />
+            {!sensorAvailable && (
+              <LightConditionPicker selected={manualBand} onSelect={setManualBand} />
+            )}
+            {mode.usesSubjectSpeedInput && (
+              <SubjectSpeedPicker selected={subjectSpeed} onSelect={setSubjectSpeed} />
+            )}
+          </>
         )}
         {mode.showExposureTriangle && !showTriangle && (
           <Pressable

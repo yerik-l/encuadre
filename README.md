@@ -186,6 +186,73 @@ un `UIVisualEffectView` real, y ojos reales mirando la pantalla:
   cada cambio de `lux` importa en Android, donde el sensor real dispara lecturas cada ~500ms y un
   reseteo ingenuo hubiera borrado la exploración del usuario constantemente sin motivo real.
 
+## Ronda de auditoría con persona de tester + crítica de diseño
+
+Con nuevas skills de revisión instaladas, se pidió una pasada doble: un agente con
+personalidad de tester muy meticuloso (contexto fresco, sin sesgo de quién escribió el
+código) buscando bugs reales de interfaz, y un segundo agente de crítica de diseño
+evaluando qué tan genérica se sentía la app frente a cualquier otra app de cámara con
+Material/Human Interface por defecto. Ambos reportaron hallazgos independientes; se
+implementó lo de mayor impacto de cada uno.
+
+**Bugs reales encontrados por el agente tester:**
+
+- **`DepthOfFieldOverlay` y `GrainOverlay` no arrancaban desde cero real**: la fórmula de
+  opacidad/intensidad tenía un piso fijo distinto de cero (`0.16 + strength * 0.5` en iOS,
+  `8 + strength * 42` en Android), así que apenas se abría el triángulo el efecto ya se veía
+  "encendido" aunque `strength` fuera 0 — no había un verdadero fundido desde nada. Se quitó
+  el intercepto: `strength * 0.66` y `strength * 50` respectivamente.
+- **El bloque de pistas superiores (`LensHint` + selectores de luz/velocidad) no se ocultaba
+  al abrir el triángulo de exposición** en `LearningScreen` — en pantallas chicas (iPhone SE)
+  ambos bloques podían superponerse. Ahora se envuelven en `{!showTriangle && (...)}`.
+- **Los cambios de valor en el triángulo no se anunciaban a VoiceOver en iOS** — Android tiene
+  `accessibilityLiveRegion="polite"`, que no existe en iOS. Se agregó
+  `AccessibilityInfo.announceForAccessibility(exposureStatus)` en un efecto (saltando el primer
+  render con un ref, para no anunciar apenas se monta el widget).
+  `userInterfaceStyle` en `app.json` decía `"light"` con una interfaz que siempre fue negra —
+  ahora dice `"dark"`, correcto para los diálogos nativos (selector de archivos, alertas) que sí
+  respetan esa clave.
+- **Las filas de ISO/apertura/obturador y los chips de guía no tenían accessibilityLabel
+  combinado** — VoiceOver leía la etiqueta y el valor como dos elementos separados en vez de
+  uno solo ("ISO: 400"). Se agregó `accessible accessibilityLabel` al contenedor de cada fila y
+  cada chip.
+
+**Cambios de diseño para que la app se sienta menos genérica (no bugs, decisiones de identidad visual):**
+
+- **El acento dejó de ser el azul de sistema de iOS (`#0A84FF`)** — cualquier app con Human
+  Interface Guidelines por defecto usa ese mismo azul, así que no distinguía a Encuadre de
+  ninguna otra. El nuevo acento (`#E8A33D`) referencia la luz de tungsteno cálida que la propia
+  app enseña a compensar en el concepto de balance de blancos — es un color con significado
+  dentro del contenido, no una elección arbitraria.
+- **`TriangleDiagram`**: un triángulo literal con un punto en cada vértice (ISO/apertura/
+  obturador) cuyo tamaño y opacidad crecen según cuánto se alejó ese parámetro de su punto de
+  partida — la métafora del "triángulo de exposición" ahora tiene una representación visual
+  literal, no solo el nombre.
+- **`FadeTransition` ahora es un "parpadeo de obturador"**: un fogonazo negro de 90ms antes de
+  que aparezca la pantalla nueva (con el contenido retrasado 70ms sobre el parpadeo para que se
+  sienta como un corte real, no una curva de opacidad disfrazada), en vez de un fundido cruzado
+  genérico.
+- **Motivos por modo en las tarjetas de `ModeSelectScreen`**: puntos de bokeh sutiles para
+  Retrato Nocturno, estelas de movimiento para Barrido/Acción — pistas visuales del propio modo,
+  no decoración porque sí (por eso el resto de los modos se queda liso a propósito).
+- **Conceptos ahora tiene un índice de "guía de campo"** (`03 / 19`) sobre cada título de
+  detalle, y `ConceptTip` pasó de caja plana a "nota al margen" (borde de acento a la izquierda,
+  cursiva) — referencia a un manual técnico impreso, no a una tarjeta de tip genérica de app.
+  `ItemsConceptDetail.tsx`/`SectionsConceptDetail.tsx` se migraron a los tokens del theme
+  (tenían literales de color viejos de antes del cambio de acento, incluido el azul de sistema
+  ya reemplazado en el resto de la app).
+- **Lecturas numéricas (f/2.8, ISO 400, índice de conceptos) con `fontVariant: ['tabular-nums']`**
+  — los dígitos no bailan de ancho al cambiar de valor, como en un instrumento real.
+
+**Descartado a propósito, no por descuido:** el comportamiento del botón atrás en el paso 0 del
+tutorial (decisión de producto, no un bug obvio); una condición de carrera de bajo riesgo en
+`AsyncStorage` al alternar idioma muy rápido; el riesgo de closure obsoleto en `StaggerItem`
+(inalcanzable con listas estáticas); confiabilidad de `LayoutAnimation` en Android bajo la Nueva
+Arquitectura (no verificable sin dispositivo real); extender los motivos de tarjeta a los 7 modos
+(solo 3 lo ameritan — forzarlo en el resto sería decoración, no información); un tratamiento de
+viñeta tipo fotómetro que se consideró y no se implementó, a favor del cambio de acento como el
+cambio de mayor impacto.
+
 ## Bugs de contenido encontrados en una revisión editorial (no de código)
 
 Se hizo una pasada del contenido como la haría un instructor de fotografía, no solo un

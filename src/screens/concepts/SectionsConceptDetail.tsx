@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ConceptTip } from '../../components/ConceptTip';
 import type { SectionsConceptContent } from '../../concepts/concepts';
+import { colors, spacing } from '../../theme/theme';
 
 export function SectionsConceptDetail({ content }: { content: SectionsConceptContent }) {
   return (
@@ -19,8 +20,8 @@ export function SectionsConceptDetail({ content }: { content: SectionsConceptCon
 }
 
 const styles = StyleSheet.create({
-  intro: { color: '#ccc', fontSize: 15, lineHeight: 22, marginBottom: 20 },
-  section: { marginBottom: 16 },
-  heading: { color: '#fff', fontSize: 16, fontWeight: '700', marginBottom: 4 },
-  body: { color: '#bbb', fontSize: 14, lineHeight: 20 },
+  intro: { color: '#CCCCCC', fontSize: 15, lineHeight: 22, marginBottom: 20 },
+  section: { marginBottom: spacing.lg },
+  heading: { color: colors.text, fontSize: 16, fontWeight: '700', marginBottom: 4 },
+  body: { color: '#BBBBBB', fontSize: 14, lineHeight: 20 },
 });

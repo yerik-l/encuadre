@@ -55,7 +55,7 @@ export function GuidanceOverlay({ guidance }: { guidance: Guidance }) {
 
 function SettingChip({ label, value }: { label: string; value: string }) {
   return (
-    <View style={styles.chip}>
+    <View style={styles.chip} accessible accessibilityLabel={`${label}: ${value}`}>
       <Text style={styles.chipLabel}>{label}</Text>
       <Text style={styles.chipValue} numberOfLines={1} adjustsFontSizeToFit>
         {value}
@@ -90,5 +90,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chipLabel: { color: colors.textSecondary, fontSize: 11, textTransform: 'uppercase' },
-  chipValue: { color: colors.text, fontSize: 15, fontWeight: '600', marginTop: 2 },
+  chipValue: { color: colors.text, fontSize: 15, fontWeight: '600', marginTop: 2, fontVariant: ['tabular-nums'] },
 });

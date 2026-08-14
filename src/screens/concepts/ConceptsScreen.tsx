@@ -36,7 +36,8 @@ export function ConceptsScreen({ onBack }: Props) {
   }, [selected, onBack]);
 
   if (selected) {
-    const concept = CONCEPTS.find((c) => c.id === selected)!;
+    const conceptIndex = CONCEPTS.findIndex((c) => c.id === selected);
+    const concept = CONCEPTS[conceptIndex];
     const topic = t.concepts.topics[selected];
     const content = t.concepts[selected];
 
@@ -56,6 +57,11 @@ export function ConceptsScreen({ onBack }: Props) {
         </Pressable>
         <SlideTransition screenKey={selected}>
           <ScrollView contentContainerStyle={styles.detailContent} showsVerticalScrollIndicator={false}>
+            {/* Numeración de guía de campo — "03 / 19" en vez de solo el
+                título, como la referencia cruzada de un manual impreso. */}
+            <Text style={styles.detailIndex}>
+              {String(conceptIndex + 1).padStart(2, '0')} / {String(CONCEPTS.length).padStart(2, '0')}
+            </Text>
             <Text style={styles.detailTitle} accessibilityRole="header">
               {topic.title}
             </Text>
@@ -125,5 +131,13 @@ const styles = StyleSheet.create({
   cardTitle: { color: colors.text, ...type.headline },
   cardSubtitle: { color: colors.textSecondary, ...type.caption, marginTop: 3 },
   detailContent: { paddingTop: spacing.lg, paddingBottom: 40 },
+  detailIndex: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1,
+    fontVariant: ['tabular-nums'],
+    marginBottom: 6,
+  },
   detailTitle: { color: colors.text, ...type.title2, marginBottom: spacing.lg },
 });

@@ -1,8 +1,18 @@
 /**
- * Sistema de diseño de Encuadre — colores y tipografía tomados del propio
- * HIG de Apple para modo oscuro (System Colors, iOS), no inventados. La
- * fuente sigue siendo la del sistema (San Francisco en iOS, Roboto en
+ * Sistema de diseño de Encuadre — superficies y tipografía tomadas del
+ * propio HIG de Apple para modo oscuro (System Colors, iOS), no inventadas.
+ * La fuente sigue siendo la del sistema (San Francisco en iOS, Roboto en
  * Android) — no se carga ninguna fuente custom, es intencional.
+ *
+ * El acento SÍ es una elección propia, no del HIG: el azul de sistema de
+ * iOS (#0A84FF) es el color que usa cualquier app que copia la paleta de
+ * Apple sin pensarlo — quedaba indistinguible de todo lo demás. En su
+ * lugar, un ámbar cálido evocando luz de tungsteno (~3200K, el balance de
+ * blancos más cálido que la propia app enseña en Conceptos) — tiene
+ * sentido temático en una app sobre luz y exposición, y es visualmente
+ * propio en vez de "la app que usa el azul de iOS". Separado a propósito
+ * del naranja de "cambió" en ExposureTriangleWidget (más rojizo, sentido
+ * de alerta) para que ambos se puedan distinguir sin confundirse.
  */
 
 export const colors = {
@@ -10,8 +20,8 @@ export const colors = {
   surface: '#1C1C1E',
   surfaceElevated: '#2C2C2E',
   surfaceOverlay: 'rgba(28,28,30,0.78)',
-  accent: '#0A84FF',
-  accentSoft: 'rgba(10,132,255,0.16)',
+  accent: '#E8A33D',
+  accentSoft: 'rgba(232,163,61,0.16)',
   text: '#FFFFFF',
   textSecondary: '#8E8E93',
   textTertiary: '#636366',

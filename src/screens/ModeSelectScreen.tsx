@@ -87,6 +87,7 @@ export function ModeSelectScreen({ onSelectMode, onOpenTutorial, onOpenConcepts 
               accessibilityLabel={t.modes[mode.id].title}
               accessibilityHint={t.modes[mode.id].subtitle}
             >
+              <ModeCardMotif modeId={mode.id} />
               <Text style={styles.cardTitle}>{t.modes[mode.id].title}</Text>
               <Text style={styles.cardSubtitle}>{t.modes[mode.id].subtitle}</Text>
               <LensHint modeId={mode.id} focalLength={mode.focalLength} compact />
@@ -96,6 +97,36 @@ export function ModeSelectScreen({ onSelectMode, onOpenTutorial, onOpenConcepts 
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+/**
+ * Pista visual sutil detrás del texto de la tarjeta, propia de lo que ese
+ * modo enseña — nunca decoración porque sí. Puntos de bokeh para retrato
+ * nocturno (luces de fondo desenfocadas), estelas para barrido/acción
+ * (el motivo del propio modo). El resto de los modos se queda con la
+ * tarjeta lisa a propósito — no todos necesitan un motivo, forzarlo en los
+ * 7 sería decoración, no información.
+ */
+function ModeCardMotif({ modeId }: { modeId: ModeId }) {
+  if (modeId === 'retratoNocturno') {
+    return (
+      <View style={styles.motif} pointerEvents="none">
+        <View style={[styles.bokehDot, { width: 24, height: 24, top: 8, right: 14, opacity: 0.16 }]} />
+        <View style={[styles.bokehDot, { width: 14, height: 14, top: 36, right: 42, opacity: 0.12 }]} />
+        <View style={[styles.bokehDot, { width: 9, height: 9, top: 18, right: 50, opacity: 0.2 }]} />
+      </View>
+    );
+  }
+  if (modeId === 'barrido' || modeId === 'accion') {
+    return (
+      <View style={styles.motif} pointerEvents="none">
+        <View style={[styles.motionStreak, { top: 16, width: 48, opacity: 0.12 }]} />
+        <View style={[styles.motionStreak, { top: 28, width: 30, opacity: 0.16 }]} />
+        <View style={[styles.motionStreak, { top: 40, width: 40, opacity: 0.1 }]} />
+      </View>
+    );
+  }
+  return null;
 }
 
 const styles = StyleSheet.create({
@@ -138,8 +169,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.large,
     padding: spacing.lg + 2,
+    overflow: 'hidden',
   },
   cardPressed: { backgroundColor: colors.surfaceElevated, transform: [{ scale: 0.985 }] },
   cardTitle: { color: colors.text, ...type.headline },
   cardSubtitle: { color: colors.textSecondary, ...type.footnote, marginTop: 4 },
+  motif: StyleSheet.absoluteFill,
+  bokehDot: { position: 'absolute', borderRadius: 999, backgroundColor: colors.accent },
+  motionStreak: { position: 'absolute', right: 12, height: 2, borderRadius: 1, backgroundColor: colors.text },
 });
