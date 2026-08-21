@@ -13,9 +13,18 @@ interface Props {
   onSelectMode: (id: ModeId) => void;
   onOpenTutorial: () => void;
   onOpenConcepts: () => void;
+  /** false mientras no se confirmó la compra Pro — bloquea los modos marcados isPro. */
+  isPro: boolean;
+  onOpenPaywall: () => void;
 }
 
-export function ModeSelectScreen({ onSelectMode, onOpenTutorial, onOpenConcepts }: Props) {
+export function ModeSelectScreen({
+  onSelectMode,
+  onOpenTutorial,
+  onOpenConcepts,
+  isPro,
+  onOpenPaywall,
+}: Props) {
   const { t, language, setLanguage } = useLanguage();
 
   return (
@@ -75,25 +84,39 @@ export function ModeSelectScreen({ onSelectMode, onOpenTutorial, onOpenConcepts 
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {MODES.map((mode, index) => (
-          <StaggerItem key={mode.id} index={index}>
-            <Pressable
-              style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-              onPress={() => {
-                haptics.tap();
-                onSelectMode(mode.id);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={t.modes[mode.id].title}
-              accessibilityHint={t.modes[mode.id].subtitle}
-            >
-              <ModeCardMotif modeId={mode.id} />
-              <Text style={styles.cardTitle}>{t.modes[mode.id].title}</Text>
-              <Text style={styles.cardSubtitle}>{t.modes[mode.id].subtitle}</Text>
-              <LensHint modeId={mode.id} focalLength={mode.focalLength} compact />
-            </Pressable>
-          </StaggerItem>
-        ))}
+        {MODES.map((mode, index) => {
+          const locked = mode.isPro && !isPro;
+          return (
+            <StaggerItem key={mode.id} index={index}>
+              <Pressable
+                style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+                onPress={() => {
+                  haptics.tap();
+                  if (locked) {
+                    onOpenPaywall();
+                  } else {
+                    onSelectMode(mode.id);
+                  }
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  locked ? `${t.modes[mode.id].title} — ${t.a11y.lockedMode}` : t.modes[mode.id].title
+                }
+                accessibilityHint={t.modes[mode.id].subtitle}
+              >
+                <ModeCardMotif modeId={mode.id} />
+                {locked && (
+                  <View style={styles.lockBadge} pointerEvents="none">
+                    <Text style={styles.lockBadgeText}>{t.paywall.badge}</Text>
+                  </View>
+                )}
+                <Text style={styles.cardTitle}>{t.modes[mode.id].title}</Text>
+                <Text style={styles.cardSubtitle}>{t.modes[mode.id].subtitle}</Text>
+                <LensHint modeId={mode.id} focalLength={mode.focalLength} compact />
+              </Pressable>
+            </StaggerItem>
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
@@ -171,6 +194,16 @@ const styles = StyleSheet.create({
     padding: spacing.lg + 2,
     overflow: 'hidden',
   },
+  lockBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    right: spacing.md,
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+  },
+  lockBadgeText: { color: colors.background, ...type.caption, fontWeight: '700' },
   cardPressed: { backgroundColor: colors.surfaceElevated, transform: [{ scale: 0.985 }] },
   cardTitle: { color: colors.text, ...type.headline },
   cardSubtitle: { color: colors.textSecondary, ...type.footnote, marginTop: 4 },

@@ -11,9 +11,11 @@ import { ModeSelectScreen } from './src/screens/ModeSelectScreen';
 import { LearningScreen } from './src/screens/LearningScreen';
 import { TutorialScreen } from './src/screens/TutorialScreen';
 import { ConceptsScreen } from './src/screens/concepts/ConceptsScreen';
+import { PaywallScreen } from './src/screens/PaywallScreen';
+import { ProProvider, usePro } from './src/purchases/ProContext';
 import { colors, radius, spacing, type } from './src/theme/theme';
 import { haptics } from './src/theme/haptics';
-import type { ModeId } from './src/modes/modes';
+import { getMode, type ModeId } from './src/modes/modes';
 
 const TUTORIAL_SEEN_KEY = 'encuadre.tutorialSeen';
 
@@ -22,7 +24,9 @@ export default function App() {
     <ErrorBoundary>
       <SafeAreaProvider>
         <LanguageProvider>
-          <AppContent />
+          <ProProvider>
+            <AppContent />
+          </ProProvider>
         </LanguageProvider>
       </SafeAreaProvider>
     </ErrorBoundary>
@@ -31,11 +35,25 @@ export default function App() {
 
 function AppContent() {
   const { t } = useLanguage();
+  const { isPro } = usePro();
   const [permission, requestPermission] = useCameraPermissions();
   const [activeMode, setActiveMode] = useState<ModeId | null>(null);
   const [tutorialSeen, setTutorialSeen] = useState<boolean | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+
+  // Puerta única de acceso a un modo Pro — se llama tanto desde la tarjeta
+  // bloqueada de ModeSelectScreen como desde cualquier otro lugar que en el
+  // futuro pueda disparar `setActiveMode` directamente, para que un bug ahí
+  // no termine desbloqueando contenido pago por accidente.
+  function selectMode(id: ModeId) {
+    if (getMode(id).isPro && !isPro) {
+      setShowPaywall(true);
+      return;
+    }
+    setActiveMode(id);
+  }
 
   useEffect(() => {
     AsyncStorage.getItem(TUTORIAL_SEEN_KEY).then((value) => {
@@ -83,13 +101,18 @@ function AppContent() {
   } else if (showConcepts) {
     screenKey = 'concepts';
     content = <ConceptsScreen onBack={() => setShowConcepts(false)} />;
+  } else if (showPaywall) {
+    screenKey = 'paywall';
+    content = <PaywallScreen onClose={() => setShowPaywall(false)} />;
   } else if (activeMode === null) {
     screenKey = 'modeSelect';
     content = (
       <ModeSelectScreen
-        onSelectMode={setActiveMode}
+        onSelectMode={selectMode}
         onOpenTutorial={() => setShowTutorial(true)}
         onOpenConcepts={() => setShowConcepts(true)}
+        isPro={isPro}
+        onOpenPaywall={() => setShowPaywall(true)}
       />
     );
   } else {

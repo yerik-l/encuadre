@@ -20,6 +20,8 @@ const es = {
     isoSlider: 'Control deslizable de ISO',
     apertureSlider: 'Control deslizable de apertura',
     shutterSlider: 'Control deslizable de velocidad de obturación',
+    lockedMode: 'Modo Pro, bloqueado',
+    closePaywall: 'Cerrar pantalla de Pro',
   },
   permission: {
     title: 'Encuadre necesita tu cámara',
@@ -718,6 +720,20 @@ const es = {
       ],
     },
   },
+  paywall: {
+    badge: 'PRO',
+    title: 'Modo Pro',
+    subtitle:
+      'Barrido, retrato de acción, retrato nocturno, retrato en estudio y enfoque — desbloqueo único, para siempre, sin suscripción.',
+    unlockButton: 'Desbloquear Pro',
+    restoreButton: 'Restaurar compra',
+    purchasing: 'Procesando compra…',
+    restoring: 'Restaurando…',
+    purchaseError: 'No se pudo completar la compra. Probá de nuevo.',
+    restoreNotFound: 'No encontramos ninguna compra de Pro para restaurar.',
+    restoreSuccess: '¡Listo! Ya tenés Pro.',
+    priceUnavailable: 'Precio no disponible',
+  },
   language: { es: 'ES', en: 'EN' },
 };
 
@@ -745,6 +761,8 @@ const en: Translations = {
     isoSlider: 'ISO slider',
     apertureSlider: 'Aperture slider',
     shutterSlider: 'Shutter speed slider',
+    lockedMode: 'Pro mode, locked',
+    closePaywall: 'Close Pro screen',
   },
   permission: {
     title: 'Encuadre needs your camera',
@@ -1442,6 +1460,20 @@ const en: Translations = {
         },
       ],
     },
+  },
+  paywall: {
+    badge: 'PRO',
+    title: 'Pro mode',
+    subtitle:
+      'Panning, action portrait, night portrait, studio portrait, and focus — one-time unlock, forever, no subscription.',
+    unlockButton: 'Unlock Pro',
+    restoreButton: 'Restore purchase',
+    purchasing: 'Processing purchase…',
+    restoring: 'Restoring…',
+    purchaseError: "Couldn't complete the purchase. Try again.",
+    restoreNotFound: "We couldn't find a Pro purchase to restore.",
+    restoreSuccess: "You're all set — Pro unlocked.",
+    priceUnavailable: 'Price unavailable',
   },
   language: { es: 'ES', en: 'EN' },
 };

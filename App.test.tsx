@@ -19,6 +19,27 @@ jest.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
 
+/**
+ * react-native-iap depende de react-native-nitro-modules, un módulo nativo
+ * real que no existe en el entorno de test (jsdom/node) — sin este mock,
+ * cualquier test que monte <App /> revienta al importar la cadena
+ * App.tsx → PaywallScreen → ProContext → react-native-iap. connected:true
+ * y arrays vacíos alcanzan para que ProContext resuelva isPro:false sin
+ * quedarse colgado esperando una conexión a la tienda que nunca va a llegar.
+ */
+jest.mock('react-native-iap', () => ({
+  useIAP: () => ({
+    connected: true,
+    products: [],
+    availablePurchases: [],
+    fetchProducts: async () => {},
+    getAvailablePurchases: async () => {},
+    requestPurchase: async () => {},
+    finishTransaction: async () => {},
+  }),
+  getAvailablePurchases: async () => [],
+}));
+
 jest.mock('expo-camera', () => {
   const ReactActual = require('react');
   return {
@@ -109,5 +130,40 @@ describe('App — enrutamiento de pantallas', () => {
 
     await fireEvent.press(screen.getByText('‹ Modos'));
     await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
+  });
+
+  it('tocar un modo Pro sin haber comprado el desbloqueo muestra el paywall en vez de abrir el modo', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
+    await skipTutorial();
+    await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
+    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await waitFor(() => expect(screen.getByText('Retrato de acción')).toBeTruthy());
+
+    await fireEvent.press(screen.getByText('Retrato de acción'));
+
+    // El paywall aparece — y NO el LearningScreen del modo (que mostraría
+    // su título en el header, igual que la tarjeta, así que la aserción
+    // que realmente importa es la del título/precio propios del paywall).
+    await waitFor(() => expect(screen.getByText('Modo Pro')).toBeTruthy());
+    expect(screen.getByText('Desbloquear Pro')).toBeTruthy();
+    expect(screen.getByText('Restaurar compra')).toBeTruthy();
+
+    await fireEvent.press(screen.getByText('Cerrar'));
+    await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
+  });
+
+  it('un modo gratis (Retrato en exteriores) sigue abriendo directo, sin paywall', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
+    await skipTutorial();
+    await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
+    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
+
+    await fireEvent.press(screen.getByText('Retrato en exteriores'));
+
+    await waitFor(() => expect(screen.queryByText('Modo Pro')).toBeNull());
+    expect(screen.getByText('‹ Modos')).toBeTruthy();
   });
 });

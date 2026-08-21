@@ -53,6 +53,12 @@ export interface ModeDefinition {
   showExposureTriangle: boolean;
   /** Notación pura de distancia focal — no necesita traducción (ej. "50–85mm"). */
   focalLength: string;
+  /**
+   * true si este modo requiere el desbloqueo Pro (compra única). Retrato en
+   * exteriores y Paisaje quedan gratis a propósito — alcanzan para sentir el
+   * mecanismo central (triángulo de exposición en vivo) antes de pagar.
+   */
+  isPro: boolean;
   getGuidance: (snapshot: SensorSnapshot, t: Translations) => Guidance;
 }
 
@@ -136,6 +142,7 @@ const retrato: ModeDefinition = {
   showCompositionGrid: true,
   showExposureTriangle: true,
   focalLength: '50–85mm',
+  isPro: false,
   getGuidance: ({ lux }, t) => {
     const band = lightLabel(lux);
     const text = t.guidance.retrato[band];
@@ -171,6 +178,7 @@ const paisaje: ModeDefinition = {
   showCompositionGrid: false,
   showExposureTriangle: true,
   focalLength: '16–35mm',
+  isPro: false,
   getGuidance: ({ lux }, t) => {
     const band = paisajeLightLabel(lux);
     const text = t.guidance.paisaje[band];
@@ -206,6 +214,7 @@ const barrido: ModeDefinition = {
   showCompositionGrid: false,
   showExposureTriangle: true,
   focalLength: '24–70mm',
+  isPro: true,
   getGuidance: ({ lux, motionMagnitude }, t) => {
     const band = lightLabel(lux);
     const isSteady = motionMagnitude < 0.6;
@@ -238,6 +247,7 @@ const accion: ModeDefinition = {
   showCompositionGrid: false,
   showExposureTriangle: true,
   focalLength: '70–200mm',
+  isPro: true,
   getGuidance: ({ lux, subjectSpeed = 'medio' }, t) => {
     const band = actionLightLabel(lux);
     const shutterBySpeed: Record<SubjectSpeed, string> = {
@@ -273,6 +283,7 @@ const retratoNocturno: ModeDefinition = {
   showCompositionGrid: true,
   showExposureTriangle: true,
   focalLength: '35–50mm',
+  isPro: true,
   getGuidance: ({ lux, motionMagnitude }, t) => {
     const band = nightLightLabel(lux);
     const text = t.guidance.retratoNocturno[band];
@@ -316,6 +327,7 @@ const retratoEstudio: ModeDefinition = {
   showCompositionGrid: true,
   showExposureTriangle: true,
   focalLength: '35–50mm',
+  isPro: true,
   getGuidance: ({ lux }, t) => {
     const band = indoorLightLabel(lux);
     const text = t.guidance.retratoEstudio[band];
@@ -359,6 +371,7 @@ const enfoque: ModeDefinition = {
   showCompositionGrid: true,
   showExposureTriangle: true,
   focalLength: '35–105mm',
+  isPro: true,
   getGuidance: ({ lux, subjectSpeed = 'medio' }, t) => {
     const band = lightLabel(lux);
     const text = t.guidance.enfoque[subjectSpeed];
