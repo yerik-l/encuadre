@@ -177,16 +177,22 @@ eas submit -p ios --latest
 ## Pendiente — depende de ti
 
 1. ~~Apple Developer Program~~ — resuelto, cuenta activa
-   (`yeriklinares01@icloud.com`, equipo `UM2B45GSK6`). Con eso ya se hizo
-   todo el camino de iOS en un solo día: certificado de distribución,
-   perfil de aprovisionamiento, build ad-hoc probado en dispositivo real
-   (con varios bugs reales encontrados y corregidos, ver más abajo), build
-   de producción, y **envío a App Store Connect ya completado** — ASC App
-   ID `6799311298`. Falta que Apple termine de procesarlo (10-30 min
-   típico) para que aparezca en TestFlight.
-2. **Google Play Console** (inscripción + pago, si no la tienes ya).
-3. **Ícono final** — ya en proceso tuyo; mantén 1024×1024, RGB, sin canal
-   alfa para iOS (el placeholder actual ya cumple ese formato).
+   (`yeriklinares01@icloud.com`, equipo `UM2B45GSK6`). Build de producción
+   **#4 ya generado y enviado a App Store Connect con éxito** (submission
+   `9fc5f3aa`, ASC App ID `6799311298`) — quedó pendiente solo lo que
+   requiere tu login: completar la ficha (capturas, App Privacy,
+   clasificación de edad, precio) y hacer clic en "Submit for Review" en
+   App Store Connect.
+2. ~~Google Play Console~~ — resuelto, cuenta activa. Sigue pendiente la
+   **service account key** de Google Cloud para que `eas submit -p android`
+   pueda subir el `.aab` sin intervención manual (ver instrucciones abajo).
+3. ~~Ícono final~~ — resuelto. Se reemplazó el placeholder (que todavía
+   tenía las guías de diseño de Apple sin quitar) por el logo que
+   proporcionaste, recortado a solo la marca (cámara + diafragma, sin
+   texto — Apple desaconseja texto dentro del ícono), 1024×1024 RGB sin
+   canal alfa. Variantes de Android (`android-icon-foreground/monochrome`)
+   y `favicon.png`/`splash-icon.png` regeneradas a partir del mismo
+   recorte para que quede consistente en toda la app.
 4. ~~Correo real de contacto en la política de privacidad~~ — resuelto,
    `privacy-policy.html` ya usa `linaresmendez25@gmail.com`.
 5. ~~Hostear la política de privacidad~~ — resuelto de verdad esta vez.
@@ -198,18 +204,41 @@ eas submit -p ios --latest
    `curl`: **200 OK, `content-type: text/html`, correo y ambas secciones
    (ES/EN) correctas.** URL final, ya lista para App Store Connect / Play
    Console: **https://yerik-l.github.io/encuadre/privacy-policy.html**.
-6. **Feature graphic de Play Store** (1024×500) — gráfico promocional
-   obligatorio para la ficha de Android, no lo generé porque es una pieza de
-   diseño de marca, igual que el ícono.
-7. **Screenshots** — mejor tomarlas desde tu Android real (ya lo tienes
-   configurado y probado con el APK) que desde el simulador de iOS: el
-   simulador no tiene cámara física, así que cualquier pantalla de un modo
-   (los 7 usan `CameraLiveView`) saldría en negro o rota — solo Tutorial,
-   selector de modos y Conceptos se verían bien, y ni siquiera tengo Expo Go
-   instalado en el simulador ahora mismo para generarlas. Para Play Store
-   necesitas mínimo 2 (hasta 8) capturas de teléfono; para App Store, una
-   tanda por tamaño de pantalla (recomendado: 6.7", puede reusarse si Apple
-   no exige las demás tras subir esa). Las de iOS mejor esperarlas a cuando
-   tengas TestFlight funcionando con un build real.
+6. ~~Feature graphic de Play Store~~ (1024×500) — generado a partir del
+   mismo logo, en
+   [`store-screenshots/android/feature-graphic-1024x500.png`](store-screenshots/android/feature-graphic-1024x500.png).
+7. ~~Screenshots~~ — generadas 6 capturas 6.9" (1320×2868, tamaño exacto
+   que exige Apple) corriendo la app real en simulador, en
+   [`store-screenshots/ios-6.9/`](store-screenshots/ios-6.9). Dos de las
+   seis (modo de cámara en vivo, tutorial de bienvenida) salieron con fondo
+   negro porque el simulador no tiene cámara física — usables como
+   respaldo, pero conviene repetirlas desde tu iPhone real vía TestFlight
+   cuando puedas. Las de Android seguís teniendo las que ya tomaste con el
+   APK real.
 8. **Clasificación de edad** (cuestionario) en ambas tiendas — preguntas de
    contenido que solo tú puedes responder con certeza legal.
+
+## Android: cómo generar la service account key (único paso que falta)
+
+`eas.json` → `submit.production.android` ya está armado, apuntando a
+`./google-play-service-account.json` (ese archivo está en `.gitignore`,
+nunca se va a commitear). Para generarlo:
+
+1. **Google Cloud Console** → creá o elegí un proyecto → **IAM & Admin →
+   Service Accounts → Create Service Account** (cualquier nombre, ej.
+   `eas-submit`).
+2. En esa service account → **Keys → Add Key → Create new key → JSON** —
+   se descarga un `.json`. Movelo a
+   `/Users/macbookair/trabajo/encuadre/google-play-service-account.json`.
+3. **Play Console** → Settings → **API access** → vincular ese mismo
+   proyecto de Google Cloud → en la lista de service accounts, **Grant
+   Access** a la que creaste, con permiso de **Release** (mínimo, para
+   poder subir builds).
+4. Con el archivo en su lugar, corré:
+   ```bash
+   eas submit -p android --latest --non-interactive
+   ```
+   Como `releaseStatus` quedó en `"draft"` a propósito, el `.aab` se sube
+   al track de producción pero **no se publica solo** — todavía tenés que
+   entrar a Play Console y confirmar el rollout, para que no se publique
+   por accidente sin que vos lo revises primero.
