@@ -1,0 +1,5 @@
+{
+  "NSCameraUsageDescription": "Encuadre usa la cámara para ver tu escena en vivo y explicarte la luz mientras aprendes. No se guarda ni se envía a ningún servidor.",
+  "NSMicrophoneUsageDescription": "Encuadre no usa el micrófono.",
+  "NSMotionUsageDescription": "Encuadre no usa datos de movimiento."
+}

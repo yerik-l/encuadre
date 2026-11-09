@@ -109,7 +109,7 @@ describe('App — enrutamiento de pantallas', () => {
     await skipTutorial();
     await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
 
-    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await fireEvent.press(screen.getByText('Continuar'));
 
     await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
     expect(screen.getByText('Retrato de acción')).toBeTruthy();
@@ -122,7 +122,7 @@ describe('App — enrutamiento de pantallas', () => {
     await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
     await skipTutorial();
     await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
-    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await fireEvent.press(screen.getByText('Continuar'));
     await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
 
     await fireEvent.press(screen.getByText('Conceptos'));
@@ -137,7 +137,7 @@ describe('App — enrutamiento de pantallas', () => {
     await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
     await skipTutorial();
     await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
-    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await fireEvent.press(screen.getByText('Continuar'));
     await waitFor(() => expect(screen.getByText('Retrato de acción')).toBeTruthy());
 
     await fireEvent.press(screen.getByText('Retrato de acción'));
@@ -158,7 +158,7 @@ describe('App — enrutamiento de pantallas', () => {
     await waitFor(() => expect(screen.getByText('Cómo usar Encuadre')).toBeTruthy());
     await skipTutorial();
     await waitFor(() => expect(screen.getByText('Encuadre necesita tu cámara')).toBeTruthy());
-    await fireEvent.press(screen.getByText('Dar permiso de cámara'));
+    await fireEvent.press(screen.getByText('Continuar'));
     await waitFor(() => expect(screen.getByText('Retrato en exteriores')).toBeTruthy());
 
     await fireEvent.press(screen.getByText('Retrato en exteriores'));

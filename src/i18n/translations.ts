@@ -14,6 +14,7 @@ const es = {
     openTutorial: 'Abrir tutorial',
     switchToEnglish: 'Cambiar idioma a inglés',
     switchToSpanish: 'Cambiar idioma a español',
+    switchToPortuguese: 'Cambiar idioma a portugués',
     openConcepts: 'Abrir Conceptos',
     closeExposureTriangle: 'Cerrar el triángulo de exposición',
     toggleKitLensTip: 'Mostrar u ocultar el consejo para lente de kit',
@@ -26,7 +27,7 @@ const es = {
   permission: {
     title: 'Encuadre necesita tu cámara',
     body: 'La usamos solo para ver la escena en vivo mientras te explico la luz y el movimiento. Nunca se guarda ni se envía a ningún servidor.',
-    button: 'Dar permiso de cámara',
+    button: 'Continuar',
     settingsTitle: 'El permiso de cámara está desactivado',
     settingsBody: 'Ya lo rechazaste una vez, así que el sistema no vuelve a preguntar automáticamente. Actívalo desde Configuración para poder usar Encuadre.',
     settingsButton: 'Abrir Configuración',
@@ -734,7 +735,7 @@ const es = {
     restoreSuccess: '¡Listo! Ya tenés Pro.',
     priceUnavailable: 'Precio no disponible',
   },
-  language: { es: 'ES', en: 'EN' },
+  language: { es: 'ES', en: 'EN', pt: 'PT' },
 };
 
 export type Translations = typeof es;
@@ -755,6 +756,7 @@ const en: Translations = {
     openTutorial: 'Open tutorial',
     switchToEnglish: 'Switch language to English',
     switchToSpanish: 'Switch language to Spanish',
+    switchToPortuguese: 'Switch language to Portuguese',
     openConcepts: 'Open Concepts',
     closeExposureTriangle: 'Close the exposure triangle',
     toggleKitLensTip: 'Show or hide the kit lens tip',
@@ -767,7 +769,7 @@ const en: Translations = {
   permission: {
     title: 'Encuadre needs your camera',
     body: "We only use it to see the scene live while explaining light and motion. Nothing is ever saved or sent to any server.",
-    button: 'Grant camera permission',
+    button: 'Continue',
     settingsTitle: 'Camera permission is off',
     settingsBody: "You already declined it once, so the system won't ask automatically again. Turn it on from Settings to use Encuadre.",
     settingsButton: 'Open Settings',
@@ -1475,7 +1477,747 @@ const en: Translations = {
     restoreSuccess: "You're all set — Pro unlocked.",
     priceUnavailable: 'Price unavailable',
   },
-  language: { es: 'ES', en: 'EN' },
+  language: { es: 'ES', en: 'EN', pt: 'PT' },
 };
 
-export const DICTIONARIES = { es, en };
+const pt: Translations = {
+  appName: 'Encuadre',
+  modeSelect: {
+    subtitle:
+      'Escolha o que você quer aprender a fazer com a sua câmera. Aponte o celular para a sua cena e eu explico ao vivo o que está acontecendo com a luz.',
+  },
+  common: {
+    back: '‹ Modos',
+    close: 'Fechar',
+    continue: 'Continuar',
+  },
+  a11y: {
+    backToModes: 'Voltar aos modos',
+    openTutorial: 'Abrir tutorial',
+    switchToEnglish: 'Mudar idioma para inglês',
+    switchToSpanish: 'Mudar idioma para espanhol',
+    switchToPortuguese: 'Mudar idioma para português',
+    openConcepts: 'Abrir Conceitos',
+    closeExposureTriangle: 'Fechar o triângulo de exposição',
+    toggleKitLensTip: 'Mostrar ou ocultar a dica para lente kit',
+    isoSlider: 'Controle deslizante de ISO',
+    apertureSlider: 'Controle deslizante de abertura',
+    shutterSlider: 'Controle deslizante de velocidade do obturador',
+    lockedMode: 'Modo Pro, bloqueado',
+    closePaywall: 'Fechar tela do Pro',
+  },
+  permission: {
+    title: 'O Encuadre precisa da sua câmera',
+    body: 'Usamos só para ver a cena ao vivo enquanto explico a luz e o movimento. Nada é salvo nem enviado para nenhum servidor.',
+    button: 'Continuar',
+    settingsTitle: 'A permissão da câmera está desativada',
+    settingsBody: 'Você já recusou uma vez, então o sistema não pergunta de novo automaticamente. Ative nas Configurações para poder usar o Encuadre.',
+    settingsButton: 'Abrir Configurações',
+  },
+  modes: {
+    retrato: {
+      title: 'Retrato ao ar livre',
+      subtitle: 'Separe o seu sujeito do fundo',
+      description:
+        'Aponte para o lugar onde você vai fazer o retrato. Eu explico como equilibrar abertura e ISO de acordo com a luz que há agora, com orientação de composição incluída.',
+    },
+    paisaje: {
+      title: 'Paisagem / hora dourada',
+      subtitle: 'A cena toda em foco',
+      description:
+        'Aponte para a paisagem. Eu explico como manter tudo nítido, do primeiro ao último plano, com a luz deste momento.',
+    },
+    barrido: {
+      title: 'Panorâmica (panning)',
+      subtitle: 'Fundo com movimento, sujeito nítido',
+      description:
+        'Mova o celular como se estivesse acompanhando o seu sujeito. Vou sentir a velocidade e a firmeza do seu movimento para sugerir a velocidade do obturador.',
+    },
+    accion: {
+      title: 'Retrato de ação',
+      subtitle: 'Congele o movimento',
+      description:
+        'O celular não consegue medir a velocidade do seu sujeito, então me diga você mesmo e eu combino isso com a luz de agora.',
+    },
+    retratoNocturno: {
+      title: 'Retrato noturno',
+      subtitle: 'Trabalhe com pouca luz sem perder o sujeito',
+      description:
+        'Aponte para a cena noturna. Eu explico como aproveitar as fontes de luz que existem e quando o ISO deve assumir o peso no lugar do obturador.',
+    },
+    retratoEstudio: {
+      title: 'Retrato em estúdio / interiores',
+      subtitle: 'Controle a direção da luz',
+      description:
+        'Aponte para o seu sujeito em ambiente interno. Eu explico como usar a janela ou a sua fonte de luz como se fosse um estúdio, sem equipamento especializado.',
+    },
+    enfoque: {
+      title: 'Foco',
+      subtitle: 'Escolha o modo de foco certo',
+      description:
+        'Aponte para o seu sujeito e me diga com que velocidade ele se move. Eu ajudo você a escolher entre foco de uma só vez ou contínuo, e aviso se a luz vai dificultar o foco da sua câmera.',
+    },
+  },
+  lightBands: {
+    muy_oscuro: 'Muito escuro (noite, interior sem luz)',
+    interior: 'Interior com luz',
+    exterior_nublado: 'Exterior nublado / sombra',
+    sol_directo: 'Sol direto',
+  },
+  lightPicker: { label: 'Como está a luz agora?' },
+  subjectSpeed: {
+    label: 'Com que velocidade o seu sujeito se move?',
+    lento: 'Lento (caminhando)',
+    medio: 'Médio (correndo)',
+    rapido: 'Rápido (veículo, esporte)',
+  },
+  chips: { iso: 'ISO', aperture: 'Abertura', shutter: 'Obturador', focus: 'Foco' },
+  guidance: {
+    retrato: {
+      oscuro: {
+        headline: 'Pouca luz: priorize uma abertura grande',
+        detail:
+          'Com essa luz, uma abertura grande (número f baixo) deixa entrar mais luz e ainda separa o seu sujeito do fundo. Aumente o ISO só o necessário para que a velocidade não caia demais e a foto não saia tremida.',
+      },
+      medio: {
+        headline: 'Luz confortável para retrato',
+        detail:
+          'Com essa luz você pode escolher a abertura de acordo com o quanto de fundo quer desfocar, sem se preocupar tanto com o ISO. Abertura maior = mais desfoque de fundo.',
+      },
+      brillante: {
+        headline: 'Muita luz: cuidado com as sombras duras',
+        detail:
+          'Com sol direto a luz pode ficar dura no rosto. Feche um pouco a abertura para não superexpor e procure sombra suave ou luz lateral, se puder.',
+      },
+    },
+    paisaje: {
+      oscuro: {
+        headline: 'Pouca luz: você vai precisar de apoio firme',
+        detail:
+          'Para paisagem você quase sempre quer abertura fechada (tudo em foco), mas com pouca luz isso significa velocidades lentas. Apoie o cotovelo ou use um tripé/superfície fixa para a foto não sair tremida.',
+      },
+      medio: {
+        headline: 'Boa luz para a hora dourada',
+        detail:
+          'Essa luz suave é ideal para paisagem. Feche a abertura para que todo o enquadramento fique nítido, do perto ao longe, e mantenha o ISO baixo para evitar ruído.',
+      },
+      brillante: {
+        headline: 'Sol alto: contraste forte',
+        detail:
+          'Nesse horário o contraste entre céu e sombras é alto. Feche bastante a abertura para ter nitidez de ponta a ponta e cuide para o céu não estourar.',
+      },
+    },
+    barrido: {
+      detail:
+        'A chave da panorâmica é uma velocidade do obturador lenta combinada com um movimento suave que acompanhe o sujeito na mesma velocidade. Quanto mais lento o obturador, mais o fundo se esfuma — mas também é mais fácil o sujeito sair borrado se a sua mão não acompanhar bem.',
+      headlineSteady: 'O seu movimento ainda está muito parado',
+      headlineFast: 'Bom ritmo de panorâmica detectado',
+      headlineNormal: 'Continue movendo o celular para sentir o ritmo',
+    },
+    accion: {
+      detail:
+        'Para congelar o movimento, o que manda é a velocidade do obturador. Quanto mais rápido o seu sujeito se move, mais rápida precisa ser a velocidade — e isso vai exigir aumentar o ISO ou abrir a abertura para compensar a luz que você perde.',
+      headlineLento: 'Sujeito lento: priorize a velocidade do obturador',
+      headlineMedio: 'Sujeito médio: priorize a velocidade do obturador',
+      headlineRapido: 'Sujeito rápido: priorize a velocidade do obturador',
+    },
+    retratoNocturno: {
+      oscuro: {
+        headline: 'Muito pouca luz: priorize que o seu sujeito fique parado',
+        detail:
+          'Com essa escuridão, quase toda a luz que você tiver vai vir de uma fonte pontual (poste, janela, letreiro). Aproxime o seu sujeito dessa fonte em vez de simplesmente subir o ISO ao máximo. Mantenha o obturador em 1/60 ou mais rápido para a pessoa não sair tremida — deixe que o ISO absorva o que faltar, não o obturador.',
+      },
+      medio: {
+        headline: 'Luz urbana noturna: cuidado com o balanço de branco',
+        detail:
+          'As luzes da rua misturam cores diferentes (quente de sódio, fria de LED). Se puder, posicione o seu sujeito perto de uma única fonte de luz dominante para simplificar a cor da pele.',
+      },
+      brillante: {
+        headline: 'Cena noturna bem iluminada',
+        detail:
+          'Com letreiros ou vitrines por perto você tem luz suficiente para trabalhar com tranquilidade. Cuide para a luz colorida não tingir demais a pele — ande alguns passos para achar o ângulo com a melhor cor.',
+      },
+      shakeWarning:
+        'Estou percebendo que o celular está se mexendo bastante — apoie-se em algo firme ou encoste o cotovelo no corpo; com essa luz qualquer tremor aparece muito mais.',
+    },
+    retratoEstudio: {
+      oscuro: {
+        headline: 'Ambiente muito escuro: você vai precisar de mais luz',
+        detail:
+          'Em interiores escuros quase nunca há luz ambiente suficiente. Aproxime o seu sujeito de uma janela ou use uma luminária ou ring light como fonte principal — subir só o ISO sem uma fonte de luz real vai deixar a foto com muito ruído.',
+      },
+      medio: {
+        headline: 'Boa luz de estúdio ou de janela',
+        detail:
+          'Essa é uma luz confortável para retrato em ambiente interno. Coloque a janela ou a fonte de luz ao lado do sujeito, num ângulo de uns 45°, em vez de de frente — assim o rosto ganha volume e não fica chapado.',
+      },
+      brillante: {
+        headline: 'Luz direta forte perto de uma janela',
+        detail:
+          'Perto de uma janela com sol direto a luz pode ficar muito contrastada. Use uma cortina fina, papel branco ou qualquer tecido translúcido para suavizá-la antes que chegue ao sujeito.',
+      },
+    },
+    enfoque: {
+      lento: {
+        headline: 'Sujeito parado: use foco de uma só vez (AF-S)',
+        detail:
+          'Com o sujeito parado, o foco de uma só vez (AF-S / One-Shot) é mais preciso: a câmera foca uma vez, quando você aperta o disparador até a metade, e fica travada ali. Escolha um único ponto de foco sobre o olho ou a parte mais importante do sujeito em vez de deixar a câmera adivinhar.',
+      },
+      medio: {
+        headline: 'Sujeito em movimento: considere o foco contínuo (AF-C)',
+        detail:
+          'Com movimento moderado, o foco contínuo (AF-C / AI Servo) continua ajustando enquanto você mantém o disparador na metade, assim você não perde o sujeito se ele se mexer. Se a sua câmera permitir, use um ponto de foco pequeno para ter mais precisão.',
+      },
+      rapido: {
+        headline: 'Sujeito rápido: o foco contínuo (AF-C) é quase obrigatório',
+        detail:
+          'Com um sujeito rápido, o foco de uma só vez vai ficar para trás. Use foco contínuo (AF-C / AI Servo) e considere uma área de foco mais ampla para a câmera não perder o sujeito entre pontos individuais.',
+      },
+      lowLightWarning:
+        'Com tão pouca luz, o autofoco pode falhar ou "ficar procurando" sem travar — aponte para uma borda de alto contraste perto do seu sujeito ou mude para foco manual, se a sua câmera permitir.',
+    },
+  },
+  exposureTriangle: {
+    openButton: 'Ver o triângulo ao vivo',
+    title: 'Triângulo de exposição',
+    hint: 'Mova qualquer controle. Os outros dois se ajustam sozinhos para manter a mesma exposição — assim você vê a troca real entre eles.',
+    simulationDisclosure: 'Simulação ilustrativa: a sua câmera real não muda. O desfoque das bordas representa o efeito da abertura — não depende de onde o seu sujeito está no enquadramento.',
+    isoHint: 'Aumenta o ruído da imagem',
+    apertureHint: 'Controla o quanto do fundo fica desfocado',
+    shutterHint: 'Congela ou borra o movimento',
+    correctExposure: 'Exposição correta — igual a quando você abriu o triângulo',
+    underExposedOne: 'Ficaria 1 stop mais escura',
+    underExposedMany: 'Ficaria {n} stops mais escura',
+    overExposedOne: 'Ficaria 1 stop mais clara',
+    overExposedMany: 'Ficaria {n} stops mais clara',
+    limitReachedHint: 'Um dos controles chegou ao limite e não consegue compensar mais — é assim que a foto real seria afetada.',
+  },
+  tutorial: {
+    title: 'Como usar o Encuadre',
+    skip: 'Pular',
+    next: 'Próximo',
+    start: 'Começar',
+    reopenLabel: '?',
+    steps: [
+      {
+        title: 'Bem-vindo ao Encuadre',
+        body: 'O seu companheiro para aprender a usar a sua câmera de verdade. Ele não substitui as suas decisões, ajuda você a entendê-las.',
+      },
+      {
+        title: 'Escolha o que quer aprender',
+        body: 'Cada modo ensina uma técnica diferente: retrato externo, noturno ou de estúdio, paisagem, panorâmica ou ação. Escolha um para começar.',
+      },
+      {
+        title: 'Aponte o celular para a cena',
+        body: 'Usamos a luz e o movimento que o seu celular capta — nada é salvo nem enviado para nenhum servidor.',
+      },
+      {
+        title: 'Leia a explicação ao vivo',
+        body: 'O cartão de baixo diz o que ajustar na sua câmera real e por quê, não só qual número usar.',
+      },
+      {
+        title: 'Nem tudo é apontar a câmera',
+        body: 'O banner "Conceitos" na tela principal tem 19 temas de referência — do triângulo de exposição aos estilos fotográficos. Vale a pena explorar, principalmente se algum termo técnico ainda não ficou claro.',
+      },
+    ],
+  },
+  lens: {
+    label: 'Lente sugerida',
+    kitLensLabel: 'Com a sua lente kit',
+    retrato: {
+      type: 'Fixa (prime), f/1.8 ou mais aberta, se puder',
+      tip: 'Com essa distância focal o rosto não deforma e o fundo desfoca com facilidade.',
+      kitLensTip:
+        'Use a ponta mais longa do zoom (uns 55mm) e chegue um pouco mais perto do sujeito. Você não vai ter tanto desfoque quanto com f/1.8, mas afastar o sujeito do fundo ajuda quase tanto quanto a abertura.',
+    },
+    paisaje: {
+      type: 'Grande angular, zoom ou fixa — priorize nitidez de canto a canto',
+      tip: 'A grande angular exagera a profundidade e deixa entrar mais da cena, do primeiro ao último plano.',
+      kitLensTip:
+        'Boas notícias: a sua lente kit já cobre essa faixa na ponta mais curta (cerca de 18mm). Você não precisa de mais nada para este modo.',
+    },
+    barrido: {
+      type: 'Zoom versátil — permite reenquadrar rápido enquanto acompanha o sujeito',
+      tip: 'Se o seu sujeito passa longe de você, uma teleobjetiva (70–200mm) dá mais alcance.',
+      kitLensTip:
+        'A sua lente kit (cerca de 18-55mm) cobre bem essa faixa — não precisa trocá-la para praticar panorâmica.',
+    },
+    accion: {
+      type: 'Teleobjetiva, de preferência com abertura f/2.8 constante',
+      tip: 'A distância focal longa permite ficar longe da ação sem perder o enquadramento, e uma abertura rápida ajuda a compensar a alta velocidade do obturador.',
+      kitLensTip:
+        'Você não vai chegar a 200mm nem a f/2.8, então chegue fisicamente mais perto do que o ideal e suba o ISO mais do que o sugerido para compensar a abertura mais fechada. A velocidade do obturador continua sendo o mais importante para congelar o movimento.',
+    },
+    retratoNocturno: {
+      type: 'Fixa de 35–50mm, a mais aberta que você tiver (f/1.8 ou melhor)',
+      tip: 'À noite cada stop de abertura conta mais do que de dia — uma lente rápida e um pouco mais angular do que a de retrato comum capta mais luz e funciona melhor em espaços apertados da rua.',
+      kitLensTip:
+        'A abertura da lente kit (f/3.5–5.6) vai ficar curta para essa luz — você vai precisar subir bastante o ISO para compensar. Use a abertura mais ampla disponível e chegue perto das fontes de luz em vez de depender só do ISO.',
+    },
+    retratoEstudio: {
+      type: 'Fixa de 35–50mm, abertura grande para separar do fundo',
+      tip: 'Em interiores o espaço costuma ser menor do que ao ar livre — uma focal mais curta do que a do retrato externo permite enquadrar sem encostar na parede.',
+      kitLensTip:
+        'A lente kit funciona bem aqui porque 35–50mm já está dentro da faixa dela — use apenas o menor número f disponível nessa distância focal para ter alguma separação do fundo.',
+    },
+    enfoque: {
+      type: 'Qualquer lente com autofoco confiável — um zoom padrão (24-70mm ou a lente kit) serve para praticar',
+      tip: 'Aqui a velocidade do autofoco importa mais do que a abertura — lentes mais novas ou de linha superior focam mais rápido e "procuram" menos com pouca luz.',
+      kitLensTip:
+        'A sua lente kit funciona bem para isso — o resultado depende mais do modo que você escolhe na câmera (AF-S vs. AF-C) e de onde você coloca o ponto de foco do que da lente em si.',
+    },
+  },
+  concepts: {
+    sectionTitle: 'Conceitos',
+    sectionSubtitle:
+      'Nem tudo se aprende apontando a câmera. Estes são os conceitos que ajudam você a encontrar o seu próprio estilo, não só a expor bem.',
+    reopenLabel: '📖',
+    topics: {
+      exposureTriangle: {
+        title: 'Triângulo de exposição',
+        subtitle: 'ISO, abertura e obturador, em resumo',
+      },
+      cameraModes: {
+        title: 'Modos da câmera',
+        subtitle: 'O que significam M, A/Av, S/Tv, P e Auto',
+      },
+      sceneModes: {
+        title: 'Modos de cena',
+        subtitle: 'Os ícones do seletor: rostinho, montanha, corredor...',
+      },
+      meteringModes: {
+        title: 'Modos de medição',
+        subtitle: 'Como a câmera decide o que é "exposto corretamente"',
+      },
+      exposureCompensation: {
+        title: 'Compensação de exposição',
+        subtitle: 'Quando o fotômetro da sua câmera erra',
+      },
+      depthOfField: {
+        title: 'Profundidade de campo',
+        subtitle: 'Quanto da foto fica nítido',
+      },
+      focusModes: {
+        title: 'Modos de foco',
+        subtitle: 'Por que suas fotos saem borradas mesmo sem você se mexer',
+      },
+      whiteBalance: {
+        title: 'Balanço de branco',
+        subtitle: 'Fazer o branco parecer branco (ou não, de propósito)',
+      },
+      colorTheory: {
+        title: 'Teoria das cores',
+        subtitle: 'Como as cores do seu enquadramento trabalham juntas',
+      },
+      compositionExtra: {
+        title: 'Composição, além dos terços',
+        subtitle: 'Linhas, enquadramento natural, espaço e camadas',
+      },
+      rawVsJpeg: {
+        title: 'RAW vs. JPEG',
+        subtitle: 'Qual formato usar e por quê',
+      },
+      stabilization: {
+        title: 'Como segurar a câmera',
+        subtitle: 'A causa nº 1 de fotos borradas, e como evitá-la',
+      },
+      longExposure: {
+        title: 'Longa exposição',
+        subtitle: 'Rastros de luz, água sedosa, rastros de estrelas',
+      },
+      histogram: {
+        title: 'O histograma',
+        subtitle: 'Confirme a sua exposição sem confiar na tela',
+      },
+      flash: {
+        title: 'Uso do flash',
+        subtitle: 'Modos de flash e quando cada um ajuda',
+      },
+      lightModifiers: {
+        title: 'Modificadores de luz',
+        subtitle: 'Sombrinhas, softbox e grids — para mais adiante',
+      },
+      goldenBlueHour: {
+        title: 'Hora dourada e hora azul',
+        subtitle: 'Quando acontecem e por que todo mundo as persegue',
+      },
+      doubleExposure: {
+        title: 'Dupla exposição',
+        subtitle: 'Duas fotos, uma só imagem',
+      },
+      styles: {
+        title: 'Estilos fotográficos',
+        subtitle: 'Um ponto de partida para encontrar o seu',
+      },
+    },
+    exposureTriangle: {
+      intro:
+        'ISO, abertura e velocidade do obturador são as três variáveis que controlam quanta luz chega à sua foto — e cada uma traz um efeito colateral. Os modos de retrato deste app têm um simulador em que você os move com o dedo e vê como se compensam em tempo real; este é o resumo em texto.',
+      sections: [
+        {
+          heading: 'ISO — sensibilidade à luz',
+          body: 'Quanto mais alto, mais sensível o sensor fica à luz — mas o efeito colateral é ruído/granulação na imagem. Aumente só o necessário.',
+        },
+        {
+          heading: 'Abertura — tamanho da abertura da lente',
+          body: 'Mede-se em números f (f/1.8, f/8...). Quanto menor o número, mais aberta a abertura e mais luz entra — e o efeito colateral é menos profundidade de campo (fundo mais desfocado).',
+        },
+        {
+          heading: 'Obturador — por quanto tempo a luz entra',
+          body: 'Velocidades rápidas (1/1000) congelam o movimento; velocidades lentas (1/15) o borram. O efeito colateral de baixar demais é que até o tremor da sua mão aparece.',
+        },
+      ],
+      tip: 'Aumente um e, para manter a mesma exposição, você precisa diminuir a combinação dos outros dois — por isso é um triângulo, e não três controles soltos.',
+    },
+    cameraModes: {
+      intro: 'Essas letras no seletor da sua câmera são justamente o que este app ajuda você a entender de verdade. Cada uma dá um nível diferente de controle. Atenção: nem todas as marcas usam a mesma letra para a mesma coisa — onde for o caso, marcamos com a inicial da sua marca (N, S ou C) qual letra procurar no seu seletor.',
+      items: [
+        { name: 'Auto', description: 'A câmera decide tudo. Bom para começar, mas você não aprende o porquê de nada.' },
+        { name: 'P — Programa', description: 'A câmera escolhe abertura e velocidade; você controla ISO, flash e outros ajustes. Um passo acima do Auto.' },
+        {
+          name: 'A / Av — Prioridade de abertura',
+          description: 'Você escolhe a abertura (controla a profundidade de campo) e a câmera ajusta a velocidade. O mais usado para retrato e paisagem.',
+          brandNote: 'N · S usam "A"  —  C usa "Av"',
+        },
+        {
+          name: 'S / Tv — Prioridade de obturador',
+          description: 'Você escolhe a velocidade (controla o movimento) e a câmera ajusta a abertura. O mais usado para ação e panorâmica.',
+          brandNote: 'N · S usam "S"  —  C usa "Tv"',
+        },
+        { name: 'M — Manual', description: 'Você controla os três. É justamente o que este app está ajudando você a fazer com critério, e não de cabeça.' },
+      ],
+      tip: 'Se você quer sair do Auto sem se sentir sobrecarregado, experimente o A/Av primeiro — é onde você ganha mais controle com o mínimo de coisas para pensar.',
+    },
+    sceneModes: {
+      intro: 'Além de M/A/S/P, muitas câmeras de entrada têm ícones no seletor (rostinho, montanha, corredor...) — cada um é uma combinação automática pensada para uma situação específica. Costumam ser a primeira coisa que um iniciante toca, antes de chegar aos modos com letras.',
+      items: [
+        { name: 'Retrato (ícone de rostinho)', description: 'Abre a abertura automaticamente para desfocar o fundo e separar o sujeito.' },
+        { name: 'Paisagem (ícone de montanha)', description: 'Fecha a abertura para que todo o enquadramento fique nítido, do perto ao longe.' },
+        { name: 'Esporte / Ação (ícone de corredor)', description: 'Prioriza uma velocidade de obturador rápida para congelar o movimento.' },
+        { name: 'Macro (ícone de flor)', description: 'Foca o mais perto possível da lente, para fotografar pequenos detalhes.' },
+        { name: 'Noite (ícone de estrela ou lua)', description: 'Usa velocidades mais lentas e, às vezes, flash com sincronização lenta, automaticamente.' },
+      ],
+      tip: 'Esses modos fazem exatamente o que você já aprendeu a fazer sozinho no A/Av, S/Tv e M — só que a câmera decide sozinha, e você fica preso a uma única combinação fixa por cena.',
+    },
+    meteringModes: {
+      intro: 'Quando a câmera "decide" uma exposição em P, A/Av ou S/Tv, algo precisa medir a luz da cena primeiro. O modo de medição define qual parte do enquadramento a câmera usa para essa medição.',
+      sections: [
+        {
+          heading: 'Medição matricial / avaliativa',
+          body: 'Faz a média da cena inteira, dando um pouco mais de peso a onde você está focando. É a padrão e funciona bem na maioria das vezes.',
+        },
+        {
+          heading: 'Medição ponderada ao centro',
+          body: 'Prioriza o centro do enquadramento e ignora um pouco as bordas. Útil quando o sujeito está centralizado e o fundo tem um brilho bem diferente.',
+        },
+        {
+          heading: 'Medição pontual',
+          body: 'Mede apenas um ponto bem pequeno, normalmente onde está o seu ponto de foco. Para cenas de alto contraste, em que você precisa expor exatamente para o sujeito sem que o fundo influencie.',
+        },
+      ],
+      tip: 'Se a sua câmera continua errando com um fundo muito claro ou muito escuro mesmo depois de compensar a exposição, mudar para medição pontual sobre o sujeito costuma resolver mais rápido.',
+    },
+    exposureCompensation: {
+      intro: 'O fotômetro da sua câmera assume que, em média, toda cena é um cinza médio. Isso falha justamente nas cenas que mais importam: muita neve, muita praia ou um fundo muito escuro. A compensação de exposição (+/-) é como você diz a ela "o que você decidiu está errado, corrija".',
+      sections: [
+        {
+          heading: 'Por que o fotômetro se engana',
+          body: 'Uma cena com muito branco (neve, praia, parede branca) faz o fotômetro "escurecer demais" tentando levá-la ao cinza — a foto sai cinza e sem vida se você não compensar para +. Uma cena com muito preto faz o contrário: sai superexposta se você não compensar para -.',
+        },
+        {
+          heading: 'Como usar',
+          body: 'Procure o controle +/- (um seletor, um botão ou um ícone na tela). Funciona em P, A/Av e S/Tv — no Manual não se aplica, porque ali você já decide os três parâmetros diretamente.',
+        },
+        {
+          heading: 'Regra prática',
+          body: 'Muito branco no enquadramento → compense positivo (+1, +2). Muito preto ou escuro → compense negativo. Cena equilibrada → não mexa em nada.',
+        },
+      ],
+      tip: 'Confira o histograma depois de compensar, e não só a tela da câmera — sob o sol, a tela quase sempre mente e parece mais escura do que a foto realmente está.',
+    },
+    depthOfField: {
+      intro: 'É o quanto da sua foto parece nítido da frente para o fundo — não só o sujeito.',
+      sections: [
+        { heading: 'Abertura', body: 'Mais aberta (f/1.8) = menos profundidade de campo, fundo mais desfocado. Mais fechada (f/11) = mais profundidade de campo, tudo nítido.' },
+        { heading: 'Distância focal', body: 'Quanto mais zoom (teleobjetiva), menos profundidade de campo com a mesma abertura.' },
+        { heading: 'Distância até o sujeito', body: 'Quanto mais perto você estiver do seu sujeito, menos profundidade de campo.' },
+      ],
+      tip: 'Os três se somam: uma lente de 85mm, abertura f/1.8, perto do sujeito, dá o desfoque de fundo mais forte possível.',
+    },
+    focusModes: {
+      intro: '"Saiu borrada" nem sempre é um problema de exposição ou de mão tremida — muitas vezes é que a câmera focou onde você não queria. O foco tem seus próprios modos, tão importantes quanto o triângulo de exposição.',
+      sections: [
+        {
+          heading: 'Foco de uma só vez (AF-S / One-Shot)',
+          body: 'A câmera foca uma vez, quando você aperta o disparador até a metade, e fica travada ali. Ideal para sujeitos parados — retrato, paisagem, produto.',
+        },
+        {
+          heading: 'Foco contínuo (AF-C / AI Servo)',
+          body: 'A câmera continua ajustando o foco durante todo o tempo em que você mantém o disparador na metade, acompanhando o sujeito se ele se mexer. Para ação e panorâmica.',
+        },
+        {
+          heading: 'Ponto único vs. área ampla',
+          body: 'Em vez de deixar a câmera adivinhar o que focar, você pode escolher manualmente um único ponto — por exemplo, sobre o olho do sujeito. A área ampla é mais rápida, mas menos precisa.',
+        },
+        {
+          heading: 'Foco manual',
+          body: 'Girar você mesmo o anel da lente. Útil quando o autofoco se confunde: pouca luz, vidro no meio, padrões repetitivos ou fotografia macro bem de perto.',
+        },
+      ],
+      tip: 'Para retrato, foque sempre no olho mais próximo da câmera — é a primeira coisa que o olho humano procura ao ver uma foto de uma pessoa, mesmo que o resto saia um pouco desfocado.',
+    },
+    whiteBalance: {
+      intro:
+        'Cada fonte de luz tem uma temperatura de cor diferente: uma vela é bem quente (alaranjada), o céu nublado é frio (azulado). O balanço de branco diz à câmera o quão quente ou fria é a luz, para que o branco pareça realmente branco. Se a sua câmera não compensa bem, a foto inteira sai com um tom de cor que não parece natural.',
+      itemsLabel: 'Predefinições comuns',
+      items: [
+        { name: 'Auto', description: 'A câmera adivinha — funciona bem quase sempre, mas pode falhar com luz mista.' },
+        { name: 'Luz do dia', description: 'Para exteriores com sol direto, sem correção extra.' },
+        { name: 'Nublado', description: 'Acrescenta um pouco de calor para compensar o tom azulado do céu encoberto.' },
+        { name: 'Sombra', description: 'Acrescenta ainda mais calor — a sombra é mais azul do que o céu nublado.' },
+        { name: 'Tungstênio', description: 'Para lâmpadas incandescentes quentes — tira laranja da imagem.' },
+        { name: 'Fluorescente', description: 'Para lâmpadas tubulares esverdeadas — tira verde da imagem.' },
+      ],
+      tip: 'Em interiores com luz mista (como no retrato noturno ou de estúdio) é mais fácil posicionar o seu sujeito perto de uma única fonte dominante do que tentar corrigir várias cores de luz misturadas numa só foto.',
+      note:
+        'Nem sempre "corrigir" é o que você quer: deixar um tom quente de propósito pode dar à foto um clima aconchegante, e um tom frio pode dar um clima distante ou noturno. O balanço de branco também é uma ferramenta de estilo, e não só de correção técnica.',
+    },
+    colorTheory: {
+      intro:
+        'Você não precisa saber pintar para usar a cor a seu favor — basta entender algumas relações básicas entre as cores e aplicá-las ao escolher onde ficar e o que incluir no enquadramento.',
+      sections: [
+        {
+          heading: 'Cores complementares',
+          body: 'São as que ficam opostas no círculo cromático — laranja e azul, vermelho e verde, amarelo e roxo. Colocadas juntas numa foto, realçam uma à outra e criam contraste e energia. É a combinação mais usada no cinema (o clássico "teal and orange").',
+        },
+        {
+          heading: 'Cores análogas',
+          body: 'São as que ficam lado a lado no círculo — como amarelo, laranja e vermelho juntos. Criam harmonia e uma sensação mais calma, sem o contraste forte das complementares.',
+        },
+        {
+          heading: 'Quentes vs. frias',
+          body: 'As quentes (vermelho, laranja, amarelo) parecem próximas, enérgicas, aconchegantes. As frias (azul, verde, roxo) parecem distantes, calmas, às vezes tristes ou noturnas. A hora dourada é quente; uma noite de cidade com luzes de LED é fria.',
+        },
+      ],
+      tip: 'Antes de disparar, descubra qual é a cor dominante da sua cena e decida se você quer que o resto a acompanhe (harmonia) ou contraste com ela de propósito (energia) — em vez de deixar várias cores competirem sem que você tenha decidido.',
+    },
+    compositionExtra: {
+      intro: 'A regra dos terços é o ponto de partida, não o teto. Estes são outros recursos que você pode combinar com ela.',
+      sections: [
+        { heading: 'Linhas de condução', body: 'Caminhos, corrimãos, sombras — qualquer linha que leve o olhar até o seu sujeito.' },
+        { heading: 'Moldura natural', body: 'Use algo da cena (uma porta, galhos, um arco) para "emoldurar" o seu sujeito dentro da foto.' },
+        { heading: 'Espaço negativo', body: 'Deixe áreas vazias de propósito — dá ao sujeito espaço para "respirar" e cria uma sensação de minimalismo ou solidão.' },
+        { heading: 'Camadas de profundidade', body: 'Algo em primeiro plano, algo em plano médio, algo ao fundo — dá à foto uma sensação de espaço em vez de parecer chapada.' },
+      ],
+      tip: 'Não tente usar todos de uma vez. Escolha o que serve para o que você quer contar com aquela foto em particular.',
+    },
+    rawVsJpeg: {
+      intro: 'É o formato em que a sua câmera salva a foto, e muda o quanto você pode corrigir depois sem perder qualidade.',
+      items: [
+        { name: 'JPEG', description: 'A câmera processa e comprime a imagem automaticamente. Arquivos menores, prontos para compartilhar, mas com menos margem para corrigir exposição ou cor depois.' },
+        { name: 'RAW', description: 'Guarda toda a informação que o sensor captou, sem processar. Arquivos mais pesados, você precisa editá-los num app antes de compartilhar, mas pode corrigir muito mais sem perder qualidade.' },
+      ],
+      tip: 'Se a sua câmera permitir, fotografe em RAW + JPEG ao mesmo tempo: você tem o JPEG pronto para compartilhar na hora e o RAW caso queira editar essa foto de verdade depois.',
+    },
+    stabilization: {
+      intro: 'A causa mais comum de fotos borradas em iniciantes não é o foco — é o movimento das mãos.',
+      sections: [
+        { heading: 'Cotovelos junto ao corpo', body: 'Não soltos no ar — apoie-os contra o próprio tronco para reduzir o tremor.' },
+        { heading: 'Respire e dispare na pausa', body: 'Solte o ar e tire a foto no momento natural de pausa entre as respirações.' },
+        { heading: 'Regra básica de velocidade mínima', body: 'A velocidade do obturador não deve ser mais lenta que 1 sobre a sua distância focal (com 50mm, não mais lenta que 1/50) sem apoio. Se a sua câmera tem sensor cortado (APS-C, a maioria das câmeras de entrada), multiplique a focal por 1,5 antes de fazer a conta — uma 50mm nessa câmera se comporta como 75mm para esta regra.' },
+        { heading: 'Procure apoio com pouca luz', body: 'Uma parede, mesa ou corrimão ajuda mais do que simplesmente subir o ISO ao máximo.' },
+      ],
+      tip: 'É justamente isso que o aviso de estabilidade do modo Retrato noturno está vigiando por você.',
+    },
+    longExposure: {
+      intro: 'Quando o obturador fica aberto por mais de um ou dois segundos, tudo o que se move na cena se esfuma enquanto o que está parado fica nítido — é a técnica por trás de rastros de luz, cachoeiras sedosas e rastros de estrelas.',
+      sections: [
+        {
+          heading: 'Tripé obrigatório',
+          body: 'A partir de aproximadamente 1 segundo, nem a mão mais firme evita que a foto saia tremida. Sem um apoio totalmente fixo, essa técnica não funciona — é o outro lado do que você viu em "Como segurar a câmera".',
+        },
+        {
+          heading: 'Modo Bulb (B)',
+          body: 'Para exposições de mais de 30 segundos (onde o modo M chega ao limite na maioria das câmeras), o modo Bulb mantém o obturador aberto enquanto você mantiver o disparador pressionado. Use um disparador remoto ou o temporizador da câmera para não encostar nela e evitar vibração.',
+        },
+        {
+          heading: 'Filtro ND (densidade neutra)',
+          body: 'De dia há luz demais para expor por vários segundos sem estourar a foto. Um filtro ND escurece a lente como óculos de sol para a sua câmera, permitindo usar velocidades lentas mesmo com sol forte.',
+        },
+        {
+          heading: 'ISO no mínimo',
+          body: 'Com o obturador aberto por tanto tempo, você não precisa de ajuda do ISO — mantenha-o no valor base da sua câmera (normalmente 100) para ter o menor ruído possível.',
+        },
+        {
+          heading: 'Tempos típicos por efeito',
+          body: 'Rastros de carros à noite: 10-30 seg. Cachoeira ou rio com efeito sedoso: 1-4 seg. Nuvens com movimento visível: 30 seg-2 min. Rastros de estrelas: 15-25 min, ou várias fotos de 30 seg combinadas depois na edição.',
+        },
+      ],
+      tip: 'Comece com algo simples: água corrente de dia com um filtro ND, ou luzes de carros à noite sem precisar de filtro — não é preciso esperar uma noite estrelada para a sua primeira longa exposição.',
+    },
+    histogram: {
+      intro: 'É um gráfico que mostra o quão bem exposta está a sua foto, sem depender do quão brilhante a tela da câmera parece sob o sol.',
+      sections: [
+        { heading: 'Eixo horizontal', body: 'Vai do preto puro (esquerda) ao branco puro (direita).' },
+        { heading: 'Eixo vertical', body: 'Mostra quantos pixels da sua foto têm aquele tom.' },
+        { heading: 'Como ler', body: 'Se o gráfico se acumula encostado na esquerda, a sua foto está subexposta. Encostado na direita, superexposta.' },
+      ],
+      tip: 'Não existe um formato "correto" de histograma — uma cena noturna normalmente se acumula à esquerda. Use-o para confirmar que você não perdeu detalhe sem querer, e não para perseguir um formato perfeito.',
+    },
+    flash: {
+      intro:
+        'O flash tem má fama entre iniciantes porque, mal usado, parece chapado e artificial — mas bem usado resolve problemas que nem subir o ISO ao máximo consegue resolver, principalmente com sombras duras ou contraluz.',
+      sections: [
+        {
+          heading: 'Flash automático',
+          body: 'A câmera decide se dispara com base na luz que detecta. Prático, mas imprevisível: às vezes dispara sem necessidade (estragando um fundo que já estava bom) e às vezes não dispara quando ajudaria (contraluz).',
+        },
+        {
+          heading: 'Flash de preenchimento (fill flash)',
+          body: 'Força o flash mesmo com boa luz, para "preencher" sombras duras — sol do meio-dia sobre o rosto, ou um sujeito em contraluz com o fundo muito claro. É o uso de flash mais subestimado pelos iniciantes.',
+        },
+        {
+          heading: 'Flash desligado',
+          body: 'Desliga o flash por completo. Use quando a luz ambiente já é suficiente, em lugares onde o flash incomoda ou é proibido (shows, museus, teatros), ou quando você prefere subir o ISO a achatar a cena com luz direta.',
+        },
+        {
+          heading: 'Sincronização lenta (slow sync)',
+          body: 'Combina o flash com uma velocidade de obturador lenta: o flash congela o sujeito, mas o obturador continua aberto tempo suficiente para captar também a luz ambiente do fundo. É o que evita que o fundo fique preto numa foto noturna com flash.',
+        },
+        {
+          heading: 'Flash rebatido (bounce)',
+          body: 'Se o seu flash é externo e pode ser inclinado, aponte-o para o teto ou para uma parede próxima em vez de direto no sujeito. A luz rebatida chega muito mais suave, sem a sombra dura característica do flash direto.',
+        },
+      ],
+      tip: 'Regra geral: se você está perto do seu sujeito (menos de 3-4 metros) e há sombras duras ou contraluz, o flash de preenchimento ajuda mais do que atrapalha. Se está longe ou ao ar livre à noite, o flash quase nunca alcança longe o bastante — nesse caso é melhor subir o ISO ou procurar uma fonte de luz real, como no modo Retrato noturno.',
+    },
+    lightModifiers: {
+      intro:
+        'Tudo isto é equipamento de iluminação externa — você não precisa dele para começar. O modo Retrato em estúdio já ensina a conseguir bons resultados só com uma janela ou uma luminária. Esta é a referência para quando você quiser dar o próximo passo com um flash externo ou uma luz contínua.',
+      items: [
+        {
+          name: 'Sombrinha translúcida',
+          description: 'A luz é disparada através dela. Espalha a luz numa área ampla e suave — fácil de transportar, boa para retratos em grupo.',
+        },
+        {
+          name: 'Sombrinha refletora',
+          description: 'A luz rebate dentro dela (forrada de prata ou branco) antes de chegar ao sujeito. Mais controlada que a translúcida, com mais contraste.',
+        },
+        {
+          name: 'Softbox',
+          description: 'Uma caixa com difusor na frente. Dá a luz mais suave e controlada de todas — o padrão para retrato de estúdio.',
+        },
+        {
+          name: 'Beauty dish',
+          description: 'Um prato refletor raso. Luz mais dura que a de um softbox, mas com mais textura e brilho — muito usado em moda e beleza.',
+        },
+        {
+          name: 'Grid colmeia (honeycomb)',
+          description: 'Colocado sobre outro modificador para estreitar o feixe de luz e evitar que se espalhe onde você não quer — controla a direção, não a suavidade.',
+        },
+        {
+          name: 'Snoot',
+          description: 'Um cone ou tubo que concentra a luz num círculo bem pequeno — para iluminar um único detalhe e deixar todo o resto na sombra.',
+        },
+        {
+          name: 'Rebatedor',
+          description: 'Não emite luz, rebate. O mais barato e versátil — um painel branco, prateado ou dourado que preenche sombras usando a luz que você já tem.',
+        },
+        {
+          name: 'Painel difusor',
+          description: 'Colocado entre a fonte de luz e o sujeito (e não no flash) para suavizar qualquer luz dura, inclusive o sol direto.',
+        },
+      ],
+      tip: 'Antes de comprar qualquer um desses, um rebatedor improvisado (uma folha de isopor branca ou até um lençol) faz 80% do trabalho por uma fração do custo — a mesma lógica do modo Retrato em estúdio: use o que você já tem antes de comprar equipamento novo.',
+    },
+    goldenBlueHour: {
+      intro: 'O modo Paisagem deste app já menciona a "hora dourada" — esta é a explicação completa de quando ela acontece e por que tantos fotógrafos organizam o dia em torno dela.',
+      sections: [
+        {
+          heading: 'Hora dourada',
+          body: 'A hora aproximada depois do nascer do sol e antes do pôr do sol, quando o sol está baixo no céu. Luz quente, suave, com sombras longas — a favorita para retrato e paisagem, e o motivo pelo qual quase nenhum profissional fotografa ao meio-dia se puder evitar.',
+        },
+        {
+          heading: 'Hora azul',
+          body: 'Os 20-30 minutos logo antes do nascer do sol ou depois do pôr do sol, quando o sol já não aparece mas o céu ainda guarda luz. Tom azul profundo, muito usado em fotografia de cidade e arquitetura, porque as luzes artificiais já acesas contrastam bem com o céu.',
+        },
+        {
+          heading: 'Como descobrir o horário exato',
+          body: 'Varia conforme o local e a época do ano — nem sempre é "18h". O app de clima do seu celular costuma mostrar o horário do pôr do sol, e apps especializados como o PhotoPills calculam também a hora dourada e a hora azul exatas para onde você estiver.',
+        },
+      ],
+      tip: 'A hora dourada dura quase uma hora; a hora azul dura bem menos, uns 20-30 minutos. Se você vai sair para a hora azul, chegue com antecedência — ela acaba rápido e não avisa.',
+    },
+    doubleExposure: {
+      intro: 'Combinar duas fotos diferentes num único quadro — uma silhueta com uma textura, um rosto com uma paisagem — para criar uma imagem que nenhuma das duas fotos sozinha poderia contar.',
+      sections: [
+        {
+          heading: 'Modo de múltipla exposição na câmera',
+          body: 'Muitas câmeras (confira o menu de disparo) têm um modo de exposição múltipla integrado que combina 2 ou mais fotos automaticamente usando um modo de mesclagem (aditivo, média, escurecer, clarear). Faça as duas fotos em sequência, sem mover a câmera, se quiser que se encaixem no mesmo enquadramento.',
+        },
+        {
+          heading: 'A regra do fundo escuro e do sujeito claro',
+          body: 'A primeira foto funciona melhor com um fundo escuro ou liso e um sujeito bem iluminado — uma silhueta, um rosto contra um fundo preto. A segunda foto (a textura, a paisagem, o padrão) vai aparecer principalmente nas áreas escuras da primeira.',
+        },
+        {
+          heading: 'Se a sua câmera não tem o modo',
+          body: 'Dá para conseguir o mesmo efeito combinando duas fotos depois, num app de edição, usando um modo de mesclagem como "Clarear" ou "Tela" — dá mais controle do que fazer na câmera, ao custo de não ver o resultado na hora.',
+        },
+      ],
+      tip: 'O resultado é bastante imprevisível no começo — encare como algo para experimentar e repetir várias vezes, e não como algo que sai perfeito de primeira.',
+    },
+    styles: {
+      intro:
+        'Isto não são regras, são pontos de partida. Experimente vários, misture o que você gostar de cada um e, com o tempo, você vai perceber para qual tende naturalmente — esse é o seu estilo.',
+      items: [
+        {
+          name: 'Minimalista',
+          description: 'Composição simples, muito espaço vazio, poucos elementos, cores neutras.',
+          extra: 'Enquadre com a regra dos terços, deixando a maior parte do quadro vazia de propósito. Abertura média, nada competindo com o sujeito.',
+        },
+        {
+          name: 'Alto contraste',
+          description: 'Sombras profundas, luzes marcadas, muitas vezes em preto e branco.',
+          extra: 'Procure luz dura (sol direto, uma única fonte forte). ISO baixo. Funciona muito bem com o modo Retrato noturno.',
+        },
+        {
+          name: 'Quente e nostálgico',
+          description: 'Tons de laranja e amarelo, luz suave, sensação de lembrança.',
+          extra: 'Fotografe na hora dourada. Balanço de branco em "Nublado" mesmo com sol, para exagerar o calor.',
+        },
+        {
+          name: 'Vibrante e saturado',
+          description: 'Cores intensas e chamativas, ideal para conteúdo que precisa se destacar.',
+          extra: 'Boa luz difusa (não muito dura), cores análogas ou complementares bem definidas na cena.',
+        },
+        {
+          name: 'Cinematográfico',
+          description: 'Cores dessaturadas com um tom de cor, pouca profundidade de campo.',
+          extra: 'Abertura grande (f/1.8–f/2.8), uma cor complementar dominante (fundo azulado, pele quente), enquadramento deliberado.',
+        },
+        {
+          name: 'Documental / natural',
+          description: 'Luz disponível sem modificar, cores realistas, momentos espontâneos.',
+          extra: 'Balanço de branco automático, a luz que já está ali, sem pedir para ninguém posar.',
+        },
+      ],
+    },
+  },
+  paywall: {
+    badge: 'PRO',
+    title: 'Modo Pro',
+    subtitle:
+      'Panorâmica, retrato de ação, retrato noturno, retrato em estúdio e foco — desbloqueio único, para sempre, sem assinatura.',
+    unlockButton: 'Desbloquear Pro',
+    restoreButton: 'Restaurar compra',
+    purchasing: 'Processando compra…',
+    restoring: 'Restaurando…',
+    purchaseError: 'Não foi possível concluir a compra. Tente de novo.',
+    restoreNotFound: 'Não encontramos nenhuma compra do Pro para restaurar.',
+    restoreSuccess: 'Pronto! Você já tem o Pro.',
+    priceUnavailable: 'Preço indisponível',
+  },
+  language: { es: 'ES', en: 'EN', pt: 'PT' },
+};
+
+export const DICTIONARIES = { es, en, pt };

@@ -1,0 +1,5 @@
+{
+  "NSCameraUsageDescription": "Encuadre uses the camera to see your live scene and explain the light to you as you learn. Nothing is saved or sent to any server.",
+  "NSMicrophoneUsageDescription": "Encuadre does not use the microphone.",
+  "NSMotionUsageDescription": "Encuadre does not use motion data."
+}

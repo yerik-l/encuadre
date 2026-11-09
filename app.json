@@ -2,22 +2,22 @@
   "expo": {
     "name": "encuadre",
     "slug": "encuadre",
-    "version": "1.1.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.encuadre.app",
-      "buildNumber": "5",
+      "buildNumber": "10",
       "infoPlist": {
-        "NSCameraUsageDescription": "Encuadre usa la cámara para ver tu escena en vivo y explicarte la luz mientras aprendes. No se guarda ni se envía a ningún servidor.",
+        "NSCameraUsageDescription": "Encuadre uses the camera to see your live scene and explain the light to you as you learn. Nothing is saved or sent to any server.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.encuadre.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -54,6 +54,11 @@
     },
     "updates": {
       "url": "https://u.expo.dev/e126288c-7505-4ca4-a7c5-9483a5f15921"
+    },
+    "locales": {
+      "en": "./ios-locales/en.json",
+      "es": "./ios-locales/es.json",
+      "pt": "./ios-locales/pt.json"
     }
   }
 }

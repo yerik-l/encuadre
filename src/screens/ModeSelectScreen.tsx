@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { LensHint } from '../components/LensHint';
 import { StaggerItem } from '../components/StaggerItem';
-import { useLanguage } from '../i18n/LanguageContext';
+import { NEXT_LANGUAGE, useLanguage } from '../i18n/LanguageContext';
 import { MODES, type ModeId } from '../modes/modes';
 import { colors, radius, spacing, type } from '../theme/theme';
 import { haptics } from '../theme/haptics';
@@ -47,14 +47,18 @@ export function ModeSelectScreen({
             style={({ pressed }) => [styles.iconButton, pressed && styles.pressedShrink]}
             onPress={() => {
               haptics.select();
-              setLanguage(language === 'es' ? 'en' : 'es');
+              setLanguage(NEXT_LANGUAGE[language]);
             }}
             accessibilityRole="button"
-            accessibilityLabel={language === 'es' ? t.a11y.switchToEnglish : t.a11y.switchToSpanish}
+            accessibilityLabel={
+              {
+                es: t.a11y.switchToSpanish,
+                en: t.a11y.switchToEnglish,
+                pt: t.a11y.switchToPortuguese,
+              }[NEXT_LANGUAGE[language]]
+            }
           >
-            <Text style={styles.iconButtonText}>
-              {language === 'es' ? t.language.en : t.language.es}
-            </Text>
+            <Text style={styles.iconButtonText}>🌐 {t.language[language]}</Text>
           </Pressable>
         </View>
       </View>

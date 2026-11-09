@@ -3,9 +3,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import { DICTIONARIES, type Translations } from './translations';
 
-export type LanguageCode = 'es' | 'en';
+export type LanguageCode = 'es' | 'en' | 'pt';
+
+const LANGUAGES: LanguageCode[] = ['es', 'en', 'pt'];
+
+/** Order the header button cycles through: es → en → pt → es. */
+export const NEXT_LANGUAGE: Record<LanguageCode, LanguageCode> = { es: 'en', en: 'pt', pt: 'es' };
 
 const STORAGE_KEY = 'encuadre.language';
+
+function isLanguageCode(value: unknown): value is LanguageCode {
+  return LANGUAGES.includes(value as LanguageCode);
+}
 
 interface LanguageContextValue {
   language: LanguageCode;
@@ -17,7 +26,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 function detectDefaultLanguage(): LanguageCode {
   const deviceLanguage = Localization.getLocales()[0]?.languageCode;
-  return deviceLanguage === 'en' ? 'en' : 'es';
+  return isLanguageCode(deviceLanguage) ? deviceLanguage : 'es';
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
@@ -25,7 +34,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY).then((saved) => {
-      if (saved === 'es' || saved === 'en') setLanguageState(saved);
+      if (isLanguageCode(saved)) setLanguageState(saved);
     });
   }, []);
 
