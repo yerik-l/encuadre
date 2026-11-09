@@ -9,7 +9,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.encuadre.app",
-      "buildNumber": "10",
+      "buildNumber": "11",
       "infoPlist": {
         "NSCameraUsageDescription": "Encuadre uses the camera to see your live scene and explain the light to you as you learn. Nothing is saved or sent to any server.",
         "ITSAppUsesNonExemptEncryption": false
